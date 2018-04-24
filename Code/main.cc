@@ -79,7 +79,7 @@ int coinsCounted; // the total coin in the maching
 int coins; //
 int ballsRemaining;
 char message[] = "0Coins";
-
+char imputMessage;
 int freeBallPointsTracker = 0;
 
 
@@ -155,6 +155,9 @@ void GameControl(){
     bool ballState = digitalRead(ballDeathSwith);
     bool ballCounted;
 
+
+    Serial.read()
+
     
 
     if (coinDetect == true) {
@@ -163,6 +166,7 @@ void GameControl(){
             coins++;
             //message = coins +"coins";
             coinCounted = true;
+            Serial.println("coin counted");
         }
     } else if (coinDetect == false) {
         coinCounted = false;
@@ -172,6 +176,7 @@ void GameControl(){
     if (ballsRemaining < 1){
         BallGateControl(false);
         gameState = false;
+        Serial.println("  **** GAME OVER ****");
     }
 
     if (ballState == true){
@@ -191,7 +196,6 @@ void GameControl(){
         }
         DisplayInt(score);
     } else {
-
         if (coins >= minCoinsRequerd){
             if (startPushed){
                 coins -= minCoinsRequerd;
@@ -222,9 +226,11 @@ void EndGame(){
 
 void AddBalls(int _ballsToAdd){
     ballsRemaining += _ballsToAdd;
+    Serial.println("PLAYS: balls have been added");
 }
 void AddScore(int _score){
     score += _score;
+    Serial.println("SCORE: "+ score);
 }
 
 
@@ -282,6 +288,7 @@ bool RollOverSwich(int _inputPin){// NOT TESTED will take in a pin and making in
         return false;
     }
 }
+
 void LedGridLightUP(){
     int myLeds[] = {};
     int lights; 
@@ -327,7 +334,9 @@ void BallGateControl (bool _open){ //puts ball into play NOT DONE
     if (_open){
         //open
         //digitalWrite(gatePin, HIGH);
+        Serial.println("RUNNING: gate open");
     } else {
+        Serial.println("RUNNING: gate closed");
         //close
     }
 }
@@ -381,7 +390,7 @@ void FlipperControl(int _flipperPowerCoil, int _flipperHoldCoil, int _flipperPow
 
     // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
     if (buttonState == HIGH && button2State == LOW) {
-
+        Serial.print("RUNNING: FlipperControl  ");
         digitalWrite(_flipperHoldCoil, HIGH);
         digitalWrite(_flipperPowerCoil, HIGH);
     } else if (buttonState == HIGH && button2State == HIGH){
@@ -402,6 +411,7 @@ void SlingshotControl(int _slingshot, int _slingshotSwitch, int _points) {//NOT 
     // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
     if (buttonState == HIGH) {
         // turn LED on:
+        Serial.print("RUNNING: SlingshotControl  ");
         AddScore(_points);
         digitalWrite(_slingshot, HIGH);
         delay(40);
