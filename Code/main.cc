@@ -80,6 +80,8 @@ int coins; //
 int ballsRemaining;
 char message[] = "0Coins";
 
+int freeBallPointsTracker = 0;
+
 
 bool gameState;
 
@@ -153,7 +155,7 @@ void GameControl(){
     bool ballState = digitalRead(ballDeathSwith);
     bool ballCounted;
 
-    int freeBallPointsTracker;
+    
 
     if (coinDetect == true) {
         if(coinCounted == false){
@@ -183,6 +185,10 @@ void GameControl(){
 
     //this checks if requarments to start the game has been reheched and
     if (gameState == true){
+        if (score > freeBallPointsTracker){
+            AddBalls(freeBalls);
+            freeBallPointsTracker = score + freeBallPoints;
+        }
         DisplayInt(score);
     } else {
 
@@ -196,14 +202,7 @@ void GameControl(){
         } else {
             message = "+Coins";
         }
-    }
-
-    if (score > freeBallPointsTracker){
-        AddBalls(freeBalls);
-        freeBallPointsTracker = score + freeBallPoints;
-    }
-
-    
+    }  
 }
 
 void StartGame(){
@@ -283,7 +282,22 @@ bool RollOverSwich(int _inputPin){// NOT TESTED will take in a pin and making in
         return false;
     }
 }
-
+void LedGridLightUP(){
+    int myLeds[] = {};
+    int lights; 
+    if (gameState == true){
+        if (score > freeBallPointsTracker){
+            lights++;
+        }
+        for(int i; i <= ; i++){
+            digitalWrite(myLeds[i], HIGH);
+        }
+    } else {
+        for(int i; i <= myLeds.length(); i++){
+            digitalWrite(myLeds[i], LOW);
+        }
+    }
+}
 
 
 //******************************************************************************************************
