@@ -50,6 +50,9 @@ const int slingshotTwoSwitch = 4; // the number of the switch pin
 const int slingshotTwo = 13; // the number of the slingshot pin
 //const int slingshotLeftLED = 18; // the number of the slingshotLED pin
 
+const int gatePin = 103;
+const int openTime = 1;
+
 const int coinDetect = 100;
 const int ballDeathSwith = 101;
 const int startButton = 102;
@@ -75,7 +78,7 @@ int score;// the score for a inivial game
 int coinsCounted; // the total coin in the maching
 int coins; //
 int ballsRemaining;
-String message = "0Coins";
+char message[] = "0Coins";
 
 
 bool gameState;
@@ -129,6 +132,8 @@ void loop(){
     GameControl();
 
     ElectronicsLoop();
+
+    ToDisplay(message);
 
     delay(5);
 }
@@ -197,6 +202,8 @@ void GameControl(){
         AddBalls(freeBalls);
         freeBallPointsTracker = score + freeBallPoints;
     }
+
+    
 }
 
 void StartGame(){
@@ -224,7 +231,7 @@ void AddScore(int _score){
 
 
 void DisplayInt(int _int){//NOT DONE, NOT TESTED
-    String outputSting;
+    //String outputSting;
     char outputChar;
     int countOfNeededZeros;
     char neededZeros[];
@@ -237,8 +244,9 @@ void DisplayInt(int _int){//NOT DONE, NOT TESTED
     }
     outputSting = String(outputChar[]);
     message = outputSting;
-    return message;
 }
+
+
 
 void DisplayManger(String _str){ //NOT DONE. do not use untill test rest of code. This will make it so display it show proper timing
     String oldMessage;
@@ -248,14 +256,11 @@ void DisplayManger(String _str){ //NOT DONE. do not use untill test rest of code
     }
 }
 
-void ToDisplay (String _inputString ){ //could work for length 6 to 1
-    char charString [_inputString.length()];
+void ToDisplay (char _inputChar ){ //could work for length 6 to 1
+    if (_inputChar.length() <= 6 && _inputChar.length() >= 0){
+        Serial1.write(_inputChar);
 
-    if (_inputString.length() <= 6 && _inputString.length() > 0){
-        _inputString.toCharArray(charString, _inputString.length());
-        Serial1.write(charString);
-
-    } else if (_inputString.length() >= 7){// not supported yet.     
+    } else if (_inputChar.length() >= 7){// not supported yet.
         Serial.println("ERROR: string value too long");
     } else {
         Serial.println("ERROR: invalited print to display value");
@@ -307,6 +312,7 @@ void ElectronicsLoop(){
 void BallGateControl (bool _open){ //puts ball into play NOT DONE
     if (_open){
         //open
+        //digitalWrite(gatePin, HIGH);
     } else {
         //close
     }
