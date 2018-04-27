@@ -239,7 +239,7 @@ void DisplayInt(int _int){//NOT DONE, NOT TESTED
     //String outputSting;
     char outputChar[7];
     int countOfNeededZeros;
-    int lengthOutputChar = SizeOf(outputChar);
+    int lengthOutputChar = sizeof(outputChar);
     char neededZeros[6];
     
 
@@ -264,7 +264,7 @@ void DisplayManger(String _str){ //NOT DONE. do not use untill test rest of code
 }
 
 void ToDisplay (char _inputChar ){ //could work for length 6 to 1
-    int lengthInputChar = SizeOf(_inputChar);
+    int lengthInputChar = sizeof(_inputChar);
 
     if (lengthInputChar <= 6 && lengthInputChar >= 0){
         Serial1.write(_inputChar);
@@ -295,16 +295,17 @@ bool RollOverSwich(int _inputPin){// NOT TESTED will take in a pin and making in
 
 void LedGridLightUP(){
     int myLeds[] = {};
+    int myLedsSize = sizeof(myLeds);
     int lights; 
     if (gameState == true){
         if (score > freeBallPointsTracker){
             lights++;
         }
-        for(int i; i <= ; i++){
+        for(int i; i <= myLedsSize; i++){
             digitalWrite(myLeds[i], HIGH);
         }
     } else {
-        for(int i; i <= lengthInputChar; i++){
+        for(int i; i <= myLedsSize; i++){
             digitalWrite(myLeds[i], LOW);
         }
     }
