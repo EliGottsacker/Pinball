@@ -156,7 +156,7 @@ void GameControl(){
     bool ballCounted;
 
 
-    Serial.read()
+    imputMessage = Serial.read();
 
     
 
@@ -321,6 +321,7 @@ void LedGridLightUP(){
 
 
 void ElectronicsLoop(){
+    
     SlingshotControl(slingshotOne, slingshotOneSwitch, pointsForSlingShot);
     SlingshotControl(slingshotTwo, slingshotTwoSwitch, pointsForSlingShot);
     PopBumperControl(popBumperOne, popBumperOneSwitch, pointsForPopBumper);
