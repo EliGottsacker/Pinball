@@ -78,7 +78,7 @@ int score;// the score for a inivial game
 int coinsCounted; // the total coin in the maching
 int coins; //
 int ballsRemaining;
-char message[] = "0Coins";
+char message[6] = "0Coins";
 char imputMessage;
 int freeBallPointsTracker = 0;
 
@@ -150,20 +150,17 @@ void loop(){
 
 void GameControl(){
     bool coinCounted;
-    bool coinDetect = digitalRead(coinDetect);
-    bool startPushed = digitalRead(startButton);
-    bool ballState = digitalRead(ballDeathSwith);
+    int coinDetected = digitalRead(coinDetect);
+    int startPushed = digitalRead(startButton);
+    int ballState = digitalRead(ballDeathSwith);
     bool ballCounted;
 
 
-    imputMessage = Serial.read();
-=======
     //Serial.read()
->>>>>>> 7780345c3b3b4d49991da66b60d522c9880c69a2
 
     
 
-    if (coinDetect == true) {
+    if (coinDetected == HIGH) {
         if(coinCounted == false){
             coinsCounted++;
             coins++;
@@ -171,7 +168,7 @@ void GameControl(){
             coinCounted = true;
             Serial.println("coin counted");
         }
-    } else if (coinDetect == false) {
+    } else if (coinDetected == HIGH) {
         coinCounted = false;
     }
 
@@ -182,7 +179,7 @@ void GameControl(){
         Serial.println("  **** GAME OVER ****");
     }
 
-    if (ballState == true){
+    if (ballState == HIGH){
         if (ballCounted == false){
             ballsRemaining -= 1;
             ballCounted = true;
@@ -200,7 +197,7 @@ void GameControl(){
         DisplayInt(score);
     } else {
         if (coins >= minCoinsRequerd){
-            if (startPushed){
+            if (startPushed == HIGH){
                 coins -= minCoinsRequerd;
                 StartGame();
             } else {
@@ -240,24 +237,26 @@ void AddScore(int _score){
 
 void DisplayInt(int _int){//NOT DONE, NOT TESTED
     //String outputSting;
-    char outputChar;
+    char outputChar[7];
     int countOfNeededZeros;
-    char neededZeros[];
+    int lengthOutputChar = SizeOf(outputChar);
+    char neededZeros[6];
+    
 
-    if (outputSting.length() < 7){
+    if (true){
         for(int i = 0; i < countOfNeededZeros ; i++){
             neededZeros[i] = '0'; 
         }
         outputChar[] =  neededZeros[] + _int ;
     }
-    outputSting = String(outputChar[]);
-    message = outputSting;
+    //outputSting = String();
+    message = outputChar;
 }
 
 
 
 void DisplayManger(String _str){ //NOT DONE. do not use untill test rest of code. This will make it so display it show proper timing
-    String oldMessage;
+    char oldMessage;
     int oldScore;
     if (message != oldMessage || score != oldScore){
 
@@ -265,10 +264,12 @@ void DisplayManger(String _str){ //NOT DONE. do not use untill test rest of code
 }
 
 void ToDisplay (char _inputChar ){ //could work for length 6 to 1
-    if (_inputChar.length() <= 6 && _inputChar.length() >= 0){
+    int lengthInputChar = SizeOf(_inputChar);
+
+    if (lengthInputChar <= 6 && lengthInputChar >= 0){
         Serial1.write(_inputChar);
 
-    } else if (_inputChar.length() >= 7){// not supported yet.
+    } else if (lengthInputChar >= 7){// not supported yet.
         Serial.println("ERROR: string value too long");
     } else {
         Serial.println("ERROR: invalited print to display value");
@@ -303,7 +304,7 @@ void LedGridLightUP(){
             digitalWrite(myLeds[i], HIGH);
         }
     } else {
-        for(int i; i <= myLeds.length(); i++){
+        for(int i; i <= lengthInputChar; i++){
             digitalWrite(myLeds[i], LOW);
         }
     }
@@ -324,7 +325,6 @@ void LedGridLightUP(){
 
 
 void ElectronicsLoop(){
-    
     SlingshotControl(slingshotOne, slingshotOneSwitch, pointsForSlingShot);
     SlingshotControl(slingshotTwo, slingshotTwoSwitch, pointsForSlingShot);
     PopBumperControl(popBumperOne, popBumperOneSwitch, pointsForPopBumper);
@@ -358,6 +358,7 @@ void PopBumperControl(int _popBumper, int _popBumperSwitch, int _points){
         digitalWrite(_popBumper, HIGH);
         delay(40);
         digitalWrite(_popBumper, LOW);
+        Serial.print("RUNNING: PopBumperControl  ");
     } else {
         // turn LED off:
         digitalWrite(_popBumper, LOW);
