@@ -157,6 +157,9 @@ void GameControl(){
 
 
     imputMessage = Serial.read();
+=======
+    //Serial.read()
+>>>>>>> 7780345c3b3b4d49991da66b60d522c9880c69a2
 
     
 
