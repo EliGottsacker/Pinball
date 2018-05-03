@@ -203,12 +203,17 @@ void GameControl(){
                 coins -= minCoinsRequerd;
                 StartGame();
             } else {
-                //message = {'r','e','a','d','y'};//"ready";
+                message[1] = 'a';//"ready";
             }
         } else {
             //message = {'c','o','i','n','s'};//"acoins";
         }
     }  
+}
+void setMessage( mess) {
+  for (int i = 0; i < mess; i++) {
+
+  }
 }
 
 void StartGame(){
