@@ -178,7 +178,7 @@ void GameControl(){
     if (ballsRemaining < 1){
         BallGateControl(false);
         gameState = false;
-        Serial.println("  **** GAME OVER ****");
+        //Serial.println("  **** GAME OVER ****");
     }
 
     if (ballState == HIGH){
@@ -207,7 +207,8 @@ void GameControl(){
                 setMessage("ready");
             }
         } else {
-            //message = {'c','o','i','n','s'};//"acoins";
+            setMessage("888888");
+            delay(10);
         }
     }  
 }
@@ -278,6 +279,7 @@ void ToDisplay (char _inputChar[6] ){ //could work for length 6 to 1
 
     if (lengthInputChar <= 6 && lengthInputChar >= 0){
         Serial1.write(_inputChar);
+        Serial.println(_inputChar);
 
     } else if (lengthInputChar >= 7){// not supported yet.
         Serial.println("ERROR: string value too long");
@@ -349,9 +351,9 @@ void BallGateControl (bool _open){ //puts ball into play NOT DONE
     if (_open){
         //open
         //digitalWrite(gatePin, HIGH);
-        Serial.println("RUNNING: gate open");
+        //Serial.println("RUNNING: gate open");
     } else {
-        Serial.println("RUNNING: gate closed");
+        //Serial.println("RUNNING: gate closed");
         //close
     }
 }
