@@ -203,10 +203,10 @@ void GameControl(){
                 coins -= minCoinsRequerd;
                 StartGame();
             } else {
-                message = "ready";
+                //message = {'r','e','a','d','y'};//"ready";
             }
         } else {
-            message = "acoins";
+            //message = {'c','o','i','n','s'};//"acoins";
         }
     }  
 }
@@ -222,9 +222,6 @@ void StartGame(){
     //AddMessage();
 }
 
-void EndGame(){
-
-}
 
 void AddBalls(int _ballsToAdd){
     ballsRemaining += _ballsToAdd;
@@ -268,7 +265,7 @@ void DisplayManger(String _str){ //NOT DONE. do not use untill test rest of code
 }
 */
 
-void ToDisplay (char _inputChar[messageArraySize] ){ //could work for length 6 to 1
+void ToDisplay (char _inputChar[6] ){ //could work for length 6 to 1
     int lengthInputChar = sizeof(_inputChar);
 
     if (lengthInputChar <= 6 && lengthInputChar >= 0){
