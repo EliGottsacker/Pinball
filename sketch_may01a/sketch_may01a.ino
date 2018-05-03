@@ -106,7 +106,7 @@ void setup() {
     // initialize the pushbutton pin as an input:
     pinMode(popBumperOneSwitch, INPUT);
     pinMode(popBumperTwoSwitch, INPUT);
-pinMode(popBumperOneSwitch, INPUT);
+    pinMode(popBumperOneSwitch, INPUT);
 
     pinMode(flipperRightHoldSwitch, INPUT);
     pinMode(flipperLeftHoldSwitch, INPUT);

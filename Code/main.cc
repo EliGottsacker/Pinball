@@ -276,15 +276,15 @@ void ToDisplay (char _inputChar ){ //could work for length 6 to 1
     }
 }
 
-bool RollOverSwich(int _inputPin){// NOT TESTED will take in a pin and making into a bool roll over switch
-    bool rollOverSwich = digitalRead(_inputPin);
+bool RollOverSwichLogic(int _inputPin){// NOT TESTED will take in a pin and making into a bool roll over switch
+    int rollOverSwich = digitalRead(_inputPin);
     bool rollOverSwichCounted;
 
-    if (rollOverSwich == true && rollOverSwichCounted == false){
+    if (rollOverSwich == HIGH && rollOverSwichCounted == false){
         rollOverSwichCounted = true;
         return true;
 
-    } else if (rollOverSwich == false){
+    } else if (rollOverSwich == LOW){
         rollOverSwichCounted = false;
         return false;
 
@@ -346,7 +346,7 @@ void BallGateControl (bool _open){ //puts ball into play NOT DONE
     }
 }
 
-void PopBumperControl(int _popBumper, int _popBumperSwitch, int _points){
+void PopBumperControl(int _popBumper, int _popBumperSwitch, int _points){ 
 
     int buttonState = 1; // variable for reading the pushbutton status
     // read the state of the pushbutton value:
@@ -366,6 +366,14 @@ void PopBumperControl(int _popBumper, int _popBumperSwitch, int _points){
     }
 }
 
+void RollOverSwichControl (int _rollOverSwich){
+    bool swichState;
+    swichState = RollOverSwichLogic(_rollOverSwich);
+    if (swichState){
+        AddScore(pointsForRollOver);
+    }
+}
+
 void UseLED(int _ledPin,  int _mode){//NOT DONE
     bool LEDState;
 
@@ -373,9 +381,11 @@ void UseLED(int _ledPin,  int _mode){//NOT DONE
         LEDState = true;
     } else if (_mode == 1){//LED on
         LEDState = false;
-    } else if (_mode == 2) {// LED bink DO NOT USE
-        digitalWrite(_ledPin, HIGH);
-    }else if (_mode == 3){
+    } else if (_mode == 2) { // LED pulse
+        LEDState = true;
+        delay(40);//ajust time
+        LEDState = false;
+    }else if (_mode == 3){ // LED bink DO NOT USE
         digitalWrite(_ledPin, HIGH);
     }
 
