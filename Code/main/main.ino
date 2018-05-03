@@ -50,12 +50,17 @@ const int slingshotTwoSwitch = 4; // the number of the switch pin
 const int slingshotTwo = 13; // the number of the slingshot pin
 //const int slingshotLeftLED = 18; // the number of the slingshotLED pin
 
+const int gatePin = 103;
+const int openTime = 1;
+
 const int coinDetect = 100;
 const int ballDeathSwith = 101;
 const int startButton = 102;
 
 const int newBalls = 5; //the number of new ball per pament
 const int minCoinsRequerd = 2; // minnum coins requard to get balls
+
+const int messageArraySize = 6;
 
 //points
 const int pointsForPopBumper = 10;
@@ -75,7 +80,9 @@ int score;// the score for a inivial game
 int coinsCounted; // the total coin in the maching
 int coins; //
 int ballsRemaining;
-String message = "0Coins";
+char message[messageArraySize];
+//char imputMessage;
+int freeBallPointsTracker = 0;
 
 
 bool gameState;
@@ -130,6 +137,8 @@ void loop(){
 
     ElectronicsLoop();
 
+    ToDisplay(message);
+
     delay(5);
 }
 
@@ -143,21 +152,25 @@ void loop(){
 
 void GameControl(){
     bool coinCounted;
-    bool coinDetect = digitalRead(coinDetect);
-    bool startPushed = digitalRead(startButton);
-    bool ballState = digitalRead(ballDeathSwith);
+    int coinDetected = digitalRead(coinDetect);
+    int startPushed = digitalRead(startButton);
+    int ballState = digitalRead(ballDeathSwith);
     bool ballCounted;
 
-    int freeBallPointsTracker;
 
-    if (coinDetect == true) {
+    //Serial.read()
+
+    
+
+    if (coinDetected == HIGH) {
         if(coinCounted == false){
             coinsCounted++;
             coins++;
             //message = coins +"coins";
             coinCounted = true;
+            Serial.println("coin counted");
         }
-    } else if (coinDetect == false) {
+    } else if (coinDetected == HIGH) {
         coinCounted = false;
     }
 
@@ -165,9 +178,10 @@ void GameControl(){
     if (ballsRemaining < 1){
         BallGateControl(false);
         gameState = false;
+        Serial.println("  **** GAME OVER ****");
     }
 
-    if (ballState == true){
+    if (ballState == HIGH){
         if (ballCounted == false){
             ballsRemaining -= 1;
             ballCounted = true;
@@ -178,25 +192,23 @@ void GameControl(){
 
     //this checks if requarments to start the game has been reheched and
     if (gameState == true){
+        if (score > freeBallPointsTracker){
+            AddBalls(freeBalls);
+            freeBallPointsTracker = score + freeBallPoints;
+        }
         DisplayInt(score);
     } else {
-
         if (coins >= minCoinsRequerd){
-            if (startPushed){
+            if (startPushed == HIGH){
                 coins -= minCoinsRequerd;
                 StartGame();
             } else {
-                message = "Ready";
+                message = "ready";
             }
         } else {
-            message = "+Coins";
+            message = "+coins";
         }
-    }
-
-    if (score > freeBallPointsTracker){
-        AddBalls(freeBalls);
-        freeBallPointsTracker = score + freeBallPoints;
-    }
+    }  
 }
 
 void StartGame(){
@@ -216,61 +228,68 @@ void EndGame(){
 
 void AddBalls(int _ballsToAdd){
     ballsRemaining += _ballsToAdd;
+    Serial.println("PLAYS: balls have been added");
 }
 void AddScore(int _score){
     score += _score;
+    Serial.println("SCORE: "+ score);
 }
 
 
 
 void DisplayInt(int _int){//NOT DONE, NOT TESTED
-    String outputSting;
-    char outputChar;
+    //String outputSting;
+    /*
+    char outputChar[messageArraySize];
     int countOfNeededZeros;
-    char neededZeros[];
+    int lengthOutputChar = sizeof(outputChar);
+    char neededZeros[]];
+    
 
-    if (outputSting.length() < 7){
+    if (true){
         for(int i = 0; i < countOfNeededZeros ; i++){
             neededZeros[i] = '0'; 
         }
-        outputChar[] =  neededZeros[] + _int ;
+        outputChar[messageArraySize] =  neededZeros + char(_int) ;
     }
-    outputSting = String(outputChar[]);
-    message = outputSting;
-    return message;
+    //outputSting = String();
+    message = outputChar
+    */
 }
 
+
+/*
 void DisplayManger(String _str){ //NOT DONE. do not use untill test rest of code. This will make it so display it show proper timing
-    String oldMessage;
+    char oldMessage;
     int oldScore;
     if (message != oldMessage || score != oldScore){
 
     }
 }
+*/
 
-void ToDisplay (String _inputString ){ //could work for length 6 to 1
-    char charString [_inputString.length()];
+void ToDisplay (char _inputChar[messageArraySize] ){ //could work for length 6 to 1
+    int lengthInputChar = sizeof(_inputChar);
 
-    if (_inputString.length() <= 6 && _inputString.length() > 0){
-        _inputString.toCharArray(charString, _inputString.length());
-        Serial1.write(charString);
+    if (lengthInputChar <= 6 && lengthInputChar >= 0){
+        Serial1.write(_inputChar);
 
-    } else if (_inputString.length() >= 7){// not supported yet.     
+    } else if (lengthInputChar >= 7){// not supported yet.
         Serial.println("ERROR: string value too long");
     } else {
         Serial.println("ERROR: invalited print to display value");
     }
 }
 
-bool RollOverSwich(int _inputPin){// NOT TESTED will take in a pin and making into a bool roll over switch
-    bool rollOverSwich = digitalRead(_inputPin);
+bool RollOverSwichLogic(int _inputPin){// NOT TESTED will take in a pin and making into a bool roll over switch
+    int rollOverSwich = digitalRead(_inputPin);
     bool rollOverSwichCounted;
 
-    if (rollOverSwich == true && rollOverSwichCounted == false){
+    if (rollOverSwich == HIGH && rollOverSwichCounted == false){
         rollOverSwichCounted = true;
         return true;
 
-    } else if (rollOverSwich == false){
+    } else if (rollOverSwich == LOW){
         rollOverSwichCounted = false;
         return false;
 
@@ -279,6 +298,23 @@ bool RollOverSwich(int _inputPin){// NOT TESTED will take in a pin and making in
     }
 }
 
+void LedGridLightUP(){
+    int myLeds[] = {};
+    int myLedsSize = sizeof(myLeds);
+    int lights; 
+    if (gameState == true){
+        if (score > freeBallPointsTracker){
+            lights++;
+        }
+        for(int i; i <= myLedsSize; i++){
+            digitalWrite(myLeds[i], HIGH);
+        }
+    } else {
+        for(int i; i <= myLedsSize; i++){
+            digitalWrite(myLeds[i], LOW);
+        }
+    }
+}
 
 
 //******************************************************************************************************
@@ -307,12 +343,15 @@ void ElectronicsLoop(){
 void BallGateControl (bool _open){ //puts ball into play NOT DONE
     if (_open){
         //open
+        //digitalWrite(gatePin, HIGH);
+        Serial.println("RUNNING: gate open");
     } else {
+        Serial.println("RUNNING: gate closed");
         //close
     }
 }
 
-void PopBumperControl(int _popBumper, int _popBumperSwitch, int _points){
+void PopBumperControl(int _popBumper, int _popBumperSwitch, int _points){ 
 
     int buttonState = 1; // variable for reading the pushbutton status
     // read the state of the pushbutton value:
@@ -325,9 +364,18 @@ void PopBumperControl(int _popBumper, int _popBumperSwitch, int _points){
         digitalWrite(_popBumper, HIGH);
         delay(40);
         digitalWrite(_popBumper, LOW);
+        Serial.print("RUNNING: PopBumperControl  ");
     } else {
         // turn LED off:
         digitalWrite(_popBumper, LOW);
+    }
+}
+
+void RollOverSwichControl (int _rollOverSwich){
+    bool swichState;
+    swichState = RollOverSwichLogic(_rollOverSwich);
+    if (swichState){
+        AddScore(pointsForRollOver);
     }
 }
 
@@ -338,9 +386,11 @@ void UseLED(int _ledPin,  int _mode){//NOT DONE
         LEDState = true;
     } else if (_mode == 1){//LED on
         LEDState = false;
-    } else if (_mode == 2) {// LED bink DO NOT USE
-        digitalWrite(_ledPin, HIGH);
-    }else if (_mode == 3){
+    } else if (_mode == 2) { // LED pulse
+        LEDState = true;
+        delay(40);//ajust time
+        LEDState = false;
+    }else if (_mode == 3){ // LED bink DO NOT USE
         digitalWrite(_ledPin, HIGH);
     }
 
@@ -361,7 +411,7 @@ void FlipperControl(int _flipperPowerCoil, int _flipperHoldCoil, int _flipperPow
 
     // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
     if (buttonState == HIGH && button2State == LOW) {
-
+        Serial.print("RUNNING: FlipperControl  ");
         digitalWrite(_flipperHoldCoil, HIGH);
         digitalWrite(_flipperPowerCoil, HIGH);
     } else if (buttonState == HIGH && button2State == HIGH){
@@ -382,6 +432,7 @@ void SlingshotControl(int _slingshot, int _slingshotSwitch, int _points) {//NOT 
     // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
     if (buttonState == HIGH) {
         // turn LED on:
+        Serial.print("RUNNING: SlingshotControl  ");
         AddScore(_points);
         digitalWrite(_slingshot, HIGH);
         delay(40);
@@ -392,157 +443,3 @@ void SlingshotControl(int _slingshot, int _slingshotSwitch, int _points) {//NOT 
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-// this has been cleaned up
-void PopBumperOneControl() {
-
-    int buttonState = 1; // variable for reading the pushbutton status
-    // read the state of the pushbutton value:
-    buttonState = digitalRead(popBumperOneSwitch);
-
-    // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-    if (buttonState == HIGH) {
-    // turn LED on:
-        digitalWrite(popBumperOne, HIGH);
-        AddScore(10);
-        delay(40);
-        digitalWrite(popBumperOne, LOW);
-    } else {
-        // turn LED off:
-        digitalWrite(popBumperOne, LOW);
-    }
-}
-
-void PopBumperTwoControl() {
-
-    int buttonState = 1; // variable for reading the pushbutton status
-    // read the state of the pushbutton value:
-    buttonState = digitalRead(popBumperTwoSwitch);
-
-    // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-    if (buttonState == HIGH) {
-        // turn LED on:
-        digitalWrite(popBumperTwo, HIGH);
-        delay(40);
-        digitalWrite(popBumperTwo, LOW);
-    } else {
-        // turn LED off:
-        digitalWrite(popBumperTwo, LOW);
-    }
-}
-
-void PopBumperThreeControl() {
-
-    int buttonState = 1; // variable for reading the pushbutton status
-    // read the state of the pushbutton value:
-    buttonState = digitalRead(popBumperThreeSwitch);
-
-    // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-    if (buttonState == HIGH) {
-        // turn LED on:
-        AddScore(pointsForSlingShot);
-        digitalWrite(popBumperThree, HIGH);
-        delay(40);
-        digitalWrite(popBumperThree, LOW);
-    } else {
-        // turn LED off:
-        digitalWrite(popBumperThree, LOW);
-    }
-}
-void FlipperRightControl() {
-
-    int buttonState = 1;
-    int button2State = 1;
-    // read the state of the pushbutton value:
-    buttonState = digitalRead(flipperRightPowerSwitch);
-    button2State = digitalRead(flipperRightHoldSwitch);
-
-    // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-    if (buttonState == HIGH && button2State == LOW) {
-
-        digitalWrite(flipperRightHoldCoil, HIGH);
-        digitalWrite(flipperRightPowerCoil, HIGH);
-    } else if (buttonState == HIGH && button2State == HIGH){
-        digitalWrite(flipperRightPowerCoil, LOW);
-    } else {
-        // turn LED off:
-        digitalWrite(flipperRightPowerCoil, LOW);
-        digitalWrite(flipperRightHoldCoil, LOW);
-    }
-}
-
-void FlipperLeftControl() {
-
-    int buttonState = 1;
-    int button2State = 1;
-    // read the state of the pushbutton value:
-    buttonState = digitalRead(flipperLeftPowerSwitch);
-    button2State = digitalRead(flipperLeftHoldSwitch);
-
-    
-    if (buttonState == HIGH && button2State == LOW) {// check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-        digitalWrite(flipperLeftHoldCoil, HIGH);
-        digitalWrite(flipperLeftPowerCoil, HIGH);
-    } else if (buttonState == HIGH && button2State == HIGH){
-        digitalWrite(flipperLeftPowerCoil, LOW);
-    } else {
-        // turn LED off:
-        digitalWrite(flipperLeftPowerCoil, LOW);
-        digitalWrite(flipperLeftHoldCoil, LOW);
-    }
-}
-void slingshotOneControl() {
-
-    int buttonState = 1; // variable for reading the pushbutton status
-    // read the state of the pushbutton value:
-    buttonState = digitalRead(slingshotOneSwitch);
-
-    // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-    if (buttonState == HIGH) {
-        // turn LED on:
-        AddScore(pointsForSlingShot);
-        digitalWrite(slingshotOne, HIGH);
-        delay(40);
-        digitalWrite(slingshotOne, LOW);
-    } else {
-        // turn LED off:
-        digitalWrite(slingshotOne, LOW);
-    }
-}
-
-void SlingshotLeftControl() {
-
-    int buttonState = 1; // variable for reading the pushbutton status
-    // read the state of the pushbutton value:
-    buttonState = digitalRead(slingshotTwoSwitch);
-
-    // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-    if (buttonState == HIGH) {
-        // turn LED on:
-        AddScore(pointsForSlingShot);
-        digitalWrite(slingshotLeft, HIGH);
-        delay(40);
-        digitalWrite(slingshotLeft, LOW);
-    } else {
-        // turn LED off:
-        digitalWrite(slingshotLeft, LOW);
-    }
-}
-*/

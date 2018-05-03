@@ -60,6 +60,8 @@ const int startButton = 102;
 const int newBalls = 5; //the number of new ball per pament
 const int minCoinsRequerd = 2; // minnum coins requard to get balls
 
+const int messageArraySize = 6;
+
 //points
 const int pointsForPopBumper = 10;
 const int pointsForSlingShot = 10;
@@ -78,8 +80,8 @@ int score;// the score for a inivial game
 int coinsCounted; // the total coin in the maching
 int coins; //
 int ballsRemaining;
-char message[6] = "0Coins";
-char imputMessage;
+char message[messageArraySize];
+//char imputMessage;
 int freeBallPointsTracker = 0;
 
 
@@ -201,10 +203,10 @@ void GameControl(){
                 coins -= minCoinsRequerd;
                 StartGame();
             } else {
-                message = "Ready";
+                message = "ready";
             }
         } else {
-            message = "+Coins";
+            message = "acoins";
         }
     }  
 }
@@ -237,24 +239,26 @@ void AddScore(int _score){
 
 void DisplayInt(int _int){//NOT DONE, NOT TESTED
     //String outputSting;
-    char outputChar[7];
+    /*
+    char outputChar[messageArraySize];
     int countOfNeededZeros;
     int lengthOutputChar = sizeof(outputChar);
-    char neededZeros[6];
+    char neededZeros[]];
     
 
     if (true){
         for(int i = 0; i < countOfNeededZeros ; i++){
             neededZeros[i] = '0'; 
         }
-        outputChar[] =  neededZeros[] + _int ;
+        outputChar[messageArraySize] =  neededZeros + char(_int) ;
     }
     //outputSting = String();
-    message = outputChar;
+    message = outputChar
+    */
 }
 
 
-
+/*
 void DisplayManger(String _str){ //NOT DONE. do not use untill test rest of code. This will make it so display it show proper timing
     char oldMessage;
     int oldScore;
@@ -262,8 +266,9 @@ void DisplayManger(String _str){ //NOT DONE. do not use untill test rest of code
 
     }
 }
+*/
 
-void ToDisplay (char _inputChar ){ //could work for length 6 to 1
+void ToDisplay (char _inputChar[messageArraySize] ){ //could work for length 6 to 1
     int lengthInputChar = sizeof(_inputChar);
 
     if (lengthInputChar <= 6 && lengthInputChar >= 0){
@@ -437,158 +442,3 @@ void SlingshotControl(int _slingshot, int _slingshotSwitch, int _points) {//NOT 
         digitalWrite(_slingshot, LOW);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-// this has been cleaned up
-void PopBumperOneControl() {
-
-    int buttonState = 1; // variable for reading the pushbutton status
-    // read the state of the pushbutton value:
-    buttonState = digitalRead(popBumperOneSwitch);
-
-    // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-    if (buttonState == HIGH) {
-    // turn LED on:
-        digitalWrite(popBumperOne, HIGH);
-        AddScore(10);
-        delay(40);
-        digitalWrite(popBumperOne, LOW);
-    } else {
-        // turn LED off:
-        digitalWrite(popBumperOne, LOW);
-    }
-}
-
-void PopBumperTwoControl() {
-
-    int buttonState = 1; // variable for reading the pushbutton status
-    // read the state of the pushbutton value:
-    buttonState = digitalRead(popBumperTwoSwitch);
-
-    // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-    if (buttonState == HIGH) {
-        // turn LED on:
-        digitalWrite(popBumperTwo, HIGH);
-        delay(40);
-        digitalWrite(popBumperTwo, LOW);
-    } else {
-        // turn LED off:
-        digitalWrite(popBumperTwo, LOW);
-    }
-}
-
-void PopBumperThreeControl() {
-
-    int buttonState = 1; // variable for reading the pushbutton status
-    // read the state of the pushbutton value:
-    buttonState = digitalRead(popBumperThreeSwitch);
-
-    // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-    if (buttonState == HIGH) {
-        // turn LED on:
-        AddScore(pointsForSlingShot);
-        digitalWrite(popBumperThree, HIGH);
-        delay(40);
-        digitalWrite(popBumperThree, LOW);
-    } else {
-        // turn LED off:
-        digitalWrite(popBumperThree, LOW);
-    }
-}
-void FlipperRightControl() {
-
-    int buttonState = 1;
-    int button2State = 1;
-    // read the state of the pushbutton value:
-    buttonState = digitalRead(flipperRightPowerSwitch);
-    button2State = digitalRead(flipperRightHoldSwitch);
-
-    // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-    if (buttonState == HIGH && button2State == LOW) {
-
-        digitalWrite(flipperRightHoldCoil, HIGH);
-        digitalWrite(flipperRightPowerCoil, HIGH);
-    } else if (buttonState == HIGH && button2State == HIGH){
-        digitalWrite(flipperRightPowerCoil, LOW);
-    } else {
-        // turn LED off:
-        digitalWrite(flipperRightPowerCoil, LOW);
-        digitalWrite(flipperRightHoldCoil, LOW);
-    }
-}
-
-void FlipperLeftControl() {
-
-    int buttonState = 1;
-    int button2State = 1;
-    // read the state of the pushbutton value:
-    buttonState = digitalRead(flipperLeftPowerSwitch);
-    button2State = digitalRead(flipperLeftHoldSwitch);
-
-    
-    if (buttonState == HIGH && button2State == LOW) {// check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-        digitalWrite(flipperLeftHoldCoil, HIGH);
-        digitalWrite(flipperLeftPowerCoil, HIGH);
-    } else if (buttonState == HIGH && button2State == HIGH){
-        digitalWrite(flipperLeftPowerCoil, LOW);
-    } else {
-        // turn LED off:
-        digitalWrite(flipperLeftPowerCoil, LOW);
-        digitalWrite(flipperLeftHoldCoil, LOW);
-    }
-}
-void slingshotOneControl() {
-
-    int buttonState = 1; // variable for reading the pushbutton status
-    // read the state of the pushbutton value:
-    buttonState = digitalRead(slingshotOneSwitch);
-
-    // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-    if (buttonState == HIGH) {
-        // turn LED on:
-        AddScore(pointsForSlingShot);
-        digitalWrite(slingshotOne, HIGH);
-        delay(40);
-        digitalWrite(slingshotOne, LOW);
-    } else {
-        // turn LED off:
-        digitalWrite(slingshotOne, LOW);
-    }
-}
-
-void SlingshotLeftControl() {
-
-    int buttonState = 1; // variable for reading the pushbutton status
-    // read the state of the pushbutton value:
-    buttonState = digitalRead(slingshotTwoSwitch);
-
-    // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-    if (buttonState == HIGH) {
-        // turn LED on:
-        AddScore(pointsForSlingShot);
-        digitalWrite(slingshotLeft, HIGH);
-        delay(40);
-        digitalWrite(slingshotLeft, LOW);
-    } else {
-        // turn LED off:
-        digitalWrite(slingshotLeft, LOW);
-    }
-}
-*/
