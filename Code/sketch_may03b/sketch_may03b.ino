@@ -157,6 +157,8 @@ void GameControl(){
     int ballState = digitalRead(ballDeathSwith);
     bool ballCounted;
 
+    setMessage("888888");
+
 
     //Serial.read()
 
@@ -207,8 +209,7 @@ void GameControl(){
                 setMessage("ready");
             }
         } else {
-            setMessage("888888");
-            delay(10);
+            setMessage("888888");     
         }
     }  
 }
@@ -279,7 +280,8 @@ void ToDisplay (char _inputChar[6] ){ //could work for length 6 to 1
 
     if (lengthInputChar <= 6 && lengthInputChar >= 0){
         Serial1.write(_inputChar);
-        Serial.println(_inputChar);
+        Serial1.write('\n');
+        //Serial.println(_inputChar);
 
     } else if (lengthInputChar >= 7){// not supported yet.
         Serial.println("ERROR: string value too long");
