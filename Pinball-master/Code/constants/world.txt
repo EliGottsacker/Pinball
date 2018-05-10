@@ -30,3 +30,20 @@ const int slingshotOne = 3; // the number of the slingshot pin
 const int slingshotTwoSwitch = A7; // the number of the switch pin
 const int slingshotTwo = 4; // the number of the slingshot pin
 //const int slingshotLeftLED = 18; // the number of the slingshotLED pin
+
+
+
+const int gatePin = 103;
+const int openTime = 1;
+
+const int coinDetect = 100;
+const int ballDeathSwith = 101;
+const int startButton = 102;
+
+//points
+const int pointsForPopBumper = 20;
+const int pointsForSlingShot = 50;
+const int pointsForRollOver = 100;
+
+const int newBalls = 5; //the number of new ball per pament
+const int minCoinsRequerd = 2; // minnum coins requard to get balls

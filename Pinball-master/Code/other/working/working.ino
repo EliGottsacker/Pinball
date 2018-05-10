@@ -26,17 +26,17 @@ const int popBumperTwoSwitch = A1; // the number of the switch pin
 const int popBumperTwo = 6; // the number of the popBumper pin
 //const int popBumperTwoLED = 15; // the number of the popBumperLED pin
 
-
-const int popBumperThreeSwitch = 37; // the number of the switch pin
-const int popBumperThree = A9; // the number of the popBumper pin
+const int popBumperThreeSwitch = A2; // the number of the switch pin
+const int popBumperThree = 7; // the number of the popBumper pin
 //const int popBumperThreeLED = 16; // the number of the popBumperLED pin
 
-const int flipperRightHoldSwitch = A15; // the number of the switch pin
+const int flipperRightHoldSwitch = A3; // the number of the switch pin
 const int flipperRightHoldCoil = 8; //
+
 const int flipperRightPowerSwitch = A4; //
 const int flipperRightPowerCoil = 9; // the number of the flipper pin
 
-const int flipperLeftHoldSwitch = A8; // the number of the switch pin
+const int flipperLeftHoldSwitch = A5; // the number of the switch pin
 const int flipperLeftHoldCoil = 10; //
 
 const int flipperLeftPowerSwitch = 2; //
@@ -50,6 +50,7 @@ const int slingshotTwoSwitch = A7; // the number of the switch pin
 const int slingshotTwo = 4; // the number of the slingshot pin
 //const int slingshotLeftLED = 18; // the number of the slingshotLED pin
 
+
 const int gatePin = 103;
 const int openTime = 1;
 
@@ -57,15 +58,17 @@ const int coinDetect = 100;
 const int ballDeathSwith = 101;
 const int startButton = 102;
 
+//points
+const int pointsForPopBumper = 10;
+const int pointsForSlingShot = 10;
+const int pointsForRollOver = 10;
+
 const int newBalls = 5; //the number of new ball per pament
 const int minCoinsRequerd = 2; // minnum coins requard to get balls
 
 const int messageArraySize = 6;
 
-//points
-const int pointsForPopBumper = 10;
-const int pointsForSlingShot = 10;
-const int pointsForRollOver = 10;
+
 
 //free balls
 const int freeBalls = 1;
@@ -111,7 +114,6 @@ void setup() {
     pinMode(popBumperOneSwitch, INPUT);
 
     pinMode(flipperRightHoldSwitch, INPUT);
-    pinMode(flipperLeftHoldSwitch, INPUT);
     pinMode(flipperRightPowerSwitch, INPUT);
     pinMode(flipperLeftPowerSwitch, INPUT);
 
@@ -167,6 +169,8 @@ void ElectronicsLoop(){
     FlipperControl(flipperRightPowerCoil, flipperRightHoldCoil, flipperRightPowerSwitch, flipperRightHoldSwitch);
     TestSwitch(flipperLeftHoldSwitch, "flipperLeftHoldSwitch");
     TestSwitch(flipperRightHoldSwitch, "flipperRightHoldSwitch");
+    TestSwitch(flipperLeftPowerSwitch, "flipperLeftPowerSwitch");
+    TestSwitch(flipperRightPowerSwitch, "flipperRightHoldSwitch");
 
     
 }
@@ -240,7 +244,7 @@ void SlingshotControl(int _slingshot, int _slingshotSwitch, int _points) {//NOT 
     // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
     if (buttonState == HIGH) {
         // turn LED on:
-        Serial.print(_slingshotSwitch);
+        Serial.println("slingshotSwitch");
         Serial.print(" ");
         //AddScore(_points);
         digitalWrite(_slingshot, HIGH);
