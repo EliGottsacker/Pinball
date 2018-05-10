@@ -36,7 +36,7 @@ const int flipperRightHoldCoil = 8; //
 const int flipperRightPowerSwitch = A4; //
 const int flipperRightPowerCoil = 9; // the number of the flipper pin
 
-const int flipperLeftHoldSwitch = A5; // the number of the switch pin
+const int flipperLeftHoldSwitch = A8; // the number of the switch pin
 const int flipperLeftHoldCoil = 10; //
 
 const int flipperLeftPowerSwitch = 2; //
@@ -199,7 +199,7 @@ void PopBumperControl(int _popBumper, int _popBumperSwitch, int _points){
         digitalWrite(_popBumper, HIGH);
         delay(40);
         digitalWrite(_popBumper, LOW);
-        Serial.print("RUNNING: PopBumperControl  ");
+        Serial.println("RUNNING: PopBumperControl  ");
     } else {
         // turn LED off:
         digitalWrite(_popBumper, LOW);
@@ -230,7 +230,8 @@ void FlipperControl(int _flipperPowerCoil, int _flipperHoldCoil, int _flipperPow
 }
 
 void TestSwitch (int _switch, String _name){
-  if (_switch == HIGH){
+  int switchState = digitalRead(_switch);
+  if (switchState == HIGH){
     Serial.println(_name);
   }
 }
