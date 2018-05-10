@@ -26,28 +26,28 @@ const int popBumperTwoSwitch = A1; // the number of the switch pin
 const int popBumperTwo = 6; // the number of the popBumper pin
 //const int popBumperTwoLED = 15; // the number of the popBumperLED pin
 
-const int popBumperThreeSwitch = A2; // the number of the switch pin
-const int popBumperThree = 7; // the number of the popBumper pin
+
+const int popBumperThreeSwitch = 37; // the number of the switch pin
+const int popBumperThree = A9; // the number of the popBumper pin
 //const int popBumperThreeLED = 16; // the number of the popBumperLED pin
 
-const int flipperRightHoldSwitch = A3; // the number of the switch pin
+const int flipperRightHoldSwitch = A15; // the number of the switch pin
 const int flipperRightHoldCoil = 8; //
-
 const int flipperRightPowerSwitch = A4; //
 const int flipperRightPowerCoil = 9; // the number of the flipper pin
 
-const int flipperLeftHoldSwitch = A5; // the number of the switch pin
+const int flipperLeftHoldSwitch = A8; // the number of the switch pin
 const int flipperLeftHoldCoil = 10; //
 
 const int flipperLeftPowerSwitch = 2; //
 const int flipperLeftPowerCoil = 11; // the number of the flipper pin
 
-const int slingshotOneSwitch = 3; // the number of the switch pin
-const int slingshotOne = 12; // the number of the slingshot pin
+const int slingshotOneSwitch = A6; // the number of the switch pin
+const int slingshotOne = 3; // the number of the slingshot pin
 //const int slingshotOneLED = 17; // the number of the slingshotLED pin
 
-const int slingshotTwoSwitch = 4; // the number of the switch pin
-const int slingshotTwo = 13; // the number of the slingshot pin
+const int slingshotTwoSwitch = A7; // the number of the switch pin
+const int slingshotTwo = 4; // the number of the slingshot pin
 //const int slingshotLeftLED = 18; // the number of the slingshotLED pin
 
 const int gatePin = 103;
@@ -158,13 +158,17 @@ void loop(){
 
 
 void ElectronicsLoop(){
-    //SlingshotControl(slingshotOne, slingshotOneSwitch, pointsForSlingShot);
-    //SlingshotControl(slingshotTwo, slingshotTwoSwitch, pointsForSlingShot);
+    SlingshotControl(slingshotOne, slingshotOneSwitch, pointsForSlingShot);
+    SlingshotControl(slingshotTwo, slingshotTwoSwitch, pointsForSlingShot);
     PopBumperControl(popBumperOne, popBumperOneSwitch, pointsForPopBumper);
     PopBumperControl(popBumperTwo, popBumperTwoSwitch, pointsForPopBumper);
     PopBumperControl(popBumperThree, popBumperThreeSwitch, pointsForPopBumper);
     FlipperControl(flipperLeftPowerCoil, flipperLeftHoldCoil, flipperLeftPowerSwitch, flipperLeftHoldSwitch);
     FlipperControl(flipperRightPowerCoil, flipperRightHoldCoil, flipperRightPowerSwitch, flipperRightHoldSwitch);
+    TestSwitch(flipperLeftHoldSwitch, "flipperLeftHoldSwitch");
+    TestSwitch(flipperRightHoldSwitch, "flipperRightHoldSwitch");
+
+    
 }
 
 void BallGateControl (bool _open){ //puts ball into play NOT DONE
@@ -220,7 +224,13 @@ void FlipperControl(int _flipperPowerCoil, int _flipperHoldCoil, int _flipperPow
         digitalWrite(_flipperHoldCoil, LOW);
     }
 }
-/*
+
+void TestSwitch (int _switch, String _name){
+  if (_switch == HIGH){
+    Serial.println(_name);
+  }
+}
+
 void SlingshotControl(int _slingshot, int _slingshotSwitch, int _points) {//NOT DONE
 
     int buttonState = 1; // variable for reading the pushbutton status
@@ -230,8 +240,9 @@ void SlingshotControl(int _slingshot, int _slingshotSwitch, int _points) {//NOT 
     // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
     if (buttonState == HIGH) {
         // turn LED on:
-        Serial.print("RUNNING: SlingshotControl  ");
-        AddScore(_points);
+        Serial.print(_slingshotSwitch);
+        Serial.print(" ");
+        //AddScore(_points);
         digitalWrite(_slingshot, HIGH);
         delay(40);
         digitalWrite(_slingshot, LOW);
@@ -239,5 +250,5 @@ void SlingshotControl(int _slingshot, int _slingshotSwitch, int _points) {//NOT 
         // turn LED off:
         digitalWrite(_slingshot, LOW);
     }
-}*/
+}
 
