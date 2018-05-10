@@ -1,3 +1,18 @@
+//
+/*  
+INSTRUCTIONS:
+
+Using the serial monitor, type in the header "$PIN" followed by the ID you've chosen
+for the PinScore display (ie, 1, 2, 3, 4 etc), and then the actual score for that unit.
+
+EXAMPLE: Typing in "$PIN4100000" to the serial monitor and hitting return should read
+the score "100000"  player four's display.
+
+For questions or comments, check the blog:
+https://howtobuildapinballmachine.wordpress.com
+
+*/
+
 String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
 unsigned char selectDigit = 0;  // start no digit selected
@@ -54,7 +69,6 @@ enum
 
 void setup() 
 {
-  Serial.flush();
   DDRB = B00111111;  // sets Arduino port B pins 0 to 4 as outputs
   DDRD = B11111111;  // sets Arduino port B pins 0 to 4 as outputs
 
@@ -105,7 +119,6 @@ void serialEvent()
   {
     // get the new byte:
     char inChar = (char)Serial.read();
-    Serial.print(inChar);
 
     // add it to the inputString:
     inputString += inChar;
@@ -115,8 +128,6 @@ void serialEvent()
     if (inChar == '\n') 
     {
       int inputLength = inputString.length();
-
-      if (inputLength == 12) {
 
       if (inputString[0] == ASCII_DOLLAR) // check for header
       {
@@ -135,15 +146,6 @@ void serialEvent()
         inputString = "";
 
       } // end If first char was $ 
-
-      } else {
-        if (inputLength < 12) {
-          return;
-        } else {
-          inputString = "";
-          return;
-        }
-      }
 
     } // end If new line 
 
