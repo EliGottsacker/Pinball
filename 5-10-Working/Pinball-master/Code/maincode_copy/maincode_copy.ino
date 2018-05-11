@@ -61,13 +61,13 @@ const int newBalls = 5; //the number of new ball per pament
 const int minCoinsRequerd = 2; // minnum coins requard to get balls
 
 //points
-const int pointsForPopBumper = 10;
-const int pointsForSlingShot = 10;
-const int pointsForRollOver = 10;
+const int pointsForPopBumper = 1;
+const int pointsForSlingShot = 1;
+const int pointsForRollOver = 1;
 
 //free balls
 const int freeBalls = 1;
-const int freeBallPoints = 2000;
+const int freeBallPoints = 200;
 
 //***************************************************************************************************************
 
@@ -304,11 +304,11 @@ setstring = comb + comb2;
 
 //Serial.print(setLength);
 
-for (int i = 0; i < 6-setLength; i++) {
-setstring = "0"+setstring;
+for (int i = 0; i < 5-setLength; i++) {
+setstring = "a"+setstring;
 }
 
-message = setstring;
+message = setstring+"0";
 //Serial.print(message);
 }
 
