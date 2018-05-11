@@ -73,7 +73,7 @@ const int freeBallPoints = 200;
 
 // PUBLIC VARs and setup
 
-const bool inputLogging = true;
+const bool inputLogging = true; //Enable this to check if inputs are working
 
 int scoreRecord;
 int score;// the score for a inivial game
@@ -176,7 +176,7 @@ void GameControl(){
             coinsCounted++;
             coins++;
             coinCounted = true;//count it
-            Serial.println("coin counted");
+            Serial.println("LOGIC: Coin counted");
         }
     } else if (coinDetected == LOW) {//if sensor is off
         coinCounted = false;//let us count it next time
@@ -187,7 +187,7 @@ void GameControl(){
       if (gameState == true) {
         //BallGateControl(false);//no need to close gate
         gameState = false;
-        Serial.println("GAME OVER");
+        Serial.println("LOGIC: Game ended");
       }
     }
 
@@ -228,7 +228,7 @@ void GameControl(){
 }
 
 void StartGame(){
-    Serial.println("RUNNING: game is now running");
+    Serial.println("LOGIC: Starting new game");
 
     //resets varible to defalt states
     gameState = true;
@@ -241,15 +241,14 @@ void StartGame(){
 
 void AddBalls(int _ballsToAdd){
     ballsRemaining += _ballsToAdd;
-    Serial.println("PLAYS: balls have been added");
+    Serial.println("LOGIC: Balls have been added");
 }
 
-void ReleaseBall() {
-  return true; 
+void ReleaseBall() {/*//UNFINISHED
   digitalWrite(gatePin, HIGH);
   Serial.println("RUNNING: gate open new ball released");
   delay(100);
-  digitalWrite(gatePin, LOW);
+  digitalWrite(gatePin, LOW);*/
 }
 
 void AddScore(int _score){
@@ -441,27 +440,15 @@ void ElectronicsLoop(){
     FlipperControl("Flipper right", flipperRightPowerCoil, flipperRightHoldCoil, flipperRightPowerSwitch, flipperRightHoldSwitch);
 }
 
-/*
-void BallGateControl (bool _open){ //puts ball into play NOT DONE
-    if (_open){
-        //open
-        //digitalWrite(gatePin, HIGH);
-        //Serial.println("RUNNING: gate open");
-    } else {
-        //Serial.println("RUNNING: gate closed");
-        //close
-    }
-}*/
-
 void PopBumperControl(String which, int _popBumper, int _popBumperSwitch, int _points){
-
-   if (inputLogging == true) {
-     Serial.println(which + " triggered");
-   }
 
     int buttonState = 1; // variable for reading the pushbutton status
     // read the state of the pushbutton value:
     buttonState = digitalRead(_popBumperSwitch);
+
+   if (inputLogging == true && buttonState == HIGH) {
+     Serial.println("RUNNING: " + which + " triggered");
+   }
 
     // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
     if (buttonState == HIGH) {
@@ -470,7 +457,6 @@ void PopBumperControl(String which, int _popBumper, int _popBumperSwitch, int _p
         digitalWrite(_popBumper, HIGH);
         delay(40);
         digitalWrite(_popBumper, LOW);
-        Serial.println("RUNNING: PopBumperControl ");
         delay(40);
     } else {
         // turn LED off:
@@ -519,11 +505,11 @@ void FlipperControl(String which, int _flipperPowerCoil, int _flipperHoldCoil, i
     if (inputLogging == true) {
 
     if (button2State == HIGH) {   
-     Serial.println(which + " hold switch triggered");
+     Serial.println("RUNNING: " + which + " hold switch triggered");
     }
 
     if (buttonState == HIGH) {
-      Serial.println(which + " button detected");
+      Serial.println("RUNNING: " + which + " button detected");
     }
 
     }
@@ -551,7 +537,7 @@ void SlingshotControl(String which, int _slingshot, int _slingshotSwitch, int _p
     if (buttonState == HIGH) {
         // turn LED on:
         if (inputLogging == true) {
-        Serial.print(which + " triggered");
+        Serial.print("RUNNING: " + which + " triggered");
         }
         //AddScore(_points);
         digitalWrite(_slingshot, HIGH);
