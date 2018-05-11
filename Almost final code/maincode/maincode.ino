@@ -78,6 +78,7 @@ int score;// the score for a inivial game
 int coinsCounted; // the total coin in the maching
 int coins; //
 int ballsRemaining;
+int updateDisplay = 0;
 String message;
 int freeBallPointsTracker = freeBallPoints;
 
@@ -133,10 +134,10 @@ void loop(){
     GameControl();
 
     ElectronicsLoop();
-
+    
     ToDisplay(message);
 
-    delay(5);
+    delay(50);
 }
 
 
@@ -216,7 +217,10 @@ void AddBalls(int _ballsToAdd){
 }
 void AddScore(int _score){
     score += _score;
-    //Serial.println("SCORE: "+ score);
+    if (score > 30000) {
+      score = 0;
+      freeBallPointsTracker = freeBallPoints;
+    }
 }
 
 void DisplayInt(int score) {
