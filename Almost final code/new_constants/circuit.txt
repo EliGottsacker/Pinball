@@ -26,6 +26,13 @@ const int slingshotOne = 24;
 const int slingshotTwoSwitch = A15;
 const int slingshotTwo = 22;
 
+const int led1 = 51;
+const int led2 = 47;
+const int led3 = 43;
+const int led4 = 39;
+const int led5 = 35;
+const int led6 = 31;
+
 //more
 const int gatePin = 103;
 const int openTime = 1;
