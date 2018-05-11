@@ -3,10 +3,10 @@
 *
 *This control jobs are:
 * [x]coin counter
-* [ ]fliper control
+* [x]fliper control
 * [x]com with screen ardino
 * [ ]games played
-* [needs work]display intergation
+* [x]display intergation
 * [ASAP]test code
 *
 *
@@ -58,7 +58,7 @@ const int ballDeathSwith = 101;
 const int startButton = 102;
 
 const int newBalls = 5; //the number of new ball per pament
-const int minCoinsRequerd = 2; // minnum coins requard to get balls
+const int minCoinsRequerd = 1; // minnum coins requard to get balls
 
 //points
 const int pointsForPopBumper = 1;
@@ -78,10 +78,11 @@ int score;// the score for a inivial game
 int coinsCounted; // the total coin in the maching
 int coins; //
 int ballsRemaining;
-int updateDisplay = 0;
 String message;
 int freeBallPointsTracker = freeBallPoints;
 
+int gameClock = 0;//this is used to make sure a lost ball does not get counted twice (independent from game state);
+int recentLostBall = 0;
 
 bool gameState;
 
@@ -138,6 +139,12 @@ void loop(){
     ToDisplay(message);
 
     delay(50);
+
+    gameClock += 1;
+    if (gameClock == 10000) {
+      gameClock = 0;
+      recentLostBall -= 10000;
+    }
 }
 
 
@@ -160,61 +167,88 @@ void GameControl(){
 
     //Serial.read()
 
-    
+    coins = 1;
 
-    if (coinDetected == HIGH) {
-        if(coinCounted == false){
+    if (coinDetected == HIGH) {//if coin sensor is on
+        if(coinCounted == false){//and we have not counted it yet
             coinsCounted++;
             coins++;
-            //message = coins +"coins";
-            coinCounted = true;
+            coinCounted = true;//count it
             Serial.println("coin counted");
         }
-    } else if (coinDetected == HIGH) {
-        coinCounted = false;
+    } else if (coinDetected == LOW) {//if sensor is off
+        coinCounted = false;//let us count it next time
     }
 
     //this closesn the gate if all balls have been used
     if (ballsRemaining < 1){
-        BallGateControl(false);
+      if (gameState == true) {
+        //BallGateControl(false);//no need to close gate
         gameState = false;
-        //Serial.println("  **** GAME OVER ****");
+        Serial.println("GAME OVER");
+      }
     }
 
     if (ballState == HIGH){
         if (ballCounted == false){
+          if (gameClock-recentLostBall < 200) {//make sure that bounced ball is not counted twice
             ballsRemaining -= 1;
             ballCounted = true;
+          }
         }
     } else {
         ballCounted = false;
     }
 
     //this checks if requarments to start the game has been reheched and
-    if (gameState == true || true){
+    if (gameState == true){
         if (score > freeBallPointsTracker){
             AddBalls(freeBalls);
+            ReleaseBall();
             freeBallPointsTracker = score + freeBallPoints;
         }
         DisplayInt(score);
     } else {
         if (coins >= minCoinsRequerd){
-            if (startPushed == HIGH){
+            //if (startPushed == HIGH){
                 coins -= minCoinsRequerd;
                 StartGame();
-            } else {
-                setMessage("aaaaaa");//enough coins
-            }
+            //} else {
+            //    setMessage("aaaaaa");//enough coins
+            //}
         } else {
             setMessage("aaaaaa");//not enough coins coins
         }
     }  
 }
 
+void StartGame(){
+    Serial.println("RUNNING: game is now running");
+
+    //resets varible to defalt states
+    gameState = true;
+    score = 0;
+    message = "aaaaaa";
+
+    AddBalls(newBalls);
+    for (int i = 0; i < newBalls; i++) {//release all balls
+        ReleaseBall();
+    }
+}
+
 void AddBalls(int _ballsToAdd){
     ballsRemaining += _ballsToAdd;
     Serial.println("PLAYS: balls have been added");
 }
+
+void ReleaseBall() {
+  return true; 
+  digitalWrite(gatePin, HIGH);
+  Serial.println("RUNNING: gate open new ball released");
+  delay(100);
+  digitalWrite(gatePin, LOW);
+}
+
 void AddScore(int _score){
     score += _score;
     if (score > 30000) {
@@ -345,53 +379,6 @@ void ToDisplay (String _inputString){ //could work for length 6 to 1
     }
 }
 
-void StartGame(){
-    Serial.println("RUNNING: game is now running");
-
-    //resets varible to defalt states
-    gameState = true;
-    score = 0;
-    AddBalls(newBalls);
-    BallGateControl(true);
-    //AddMessage();
-}
-
-
-/*
-void DisplayInt(int _int){//NOT DONE, NOT TESTED
-    //String outputSting;
-    
-    
-    char outputChar[messageArraySize];
-    int countOfNeededZeros;
-    int lengthOutputChar = sizeof(outputChar);
-    char neededZeros[]];
-    
-
-    if (true){
-        for(int i = 0; i < countOfNeededZeros ; i++){
-            neededZeros[i] = '0'; 
-        }
-        outputChar[messageArraySize] =  neededZeros + char(_int) ;
-    }
-    //outputSting = String();
-    message = outputChar
-    
-}*/
-
-
-/*
-void DisplayManger(String _str){ //NOT DONE. do not use untill test rest of code. This will make it so display it show proper timing
-    char oldMessage;
-    int oldScore;
-    if (message != oldMessage || score != oldScore){
-
-    }
-}
-*/
-
-
-
 bool RollOverSwichLogic(int _inputPin){// NOT TESTED will take in a pin and making into a bool roll over switch
     int rollOverSwich = digitalRead(_inputPin);
     bool rollOverSwichCounted;
@@ -451,6 +438,7 @@ void ElectronicsLoop(){
     FlipperControl(flipperRightPowerCoil, flipperRightHoldCoil, flipperRightPowerSwitch, flipperRightHoldSwitch);
 }
 
+/*
 void BallGateControl (bool _open){ //puts ball into play NOT DONE
     if (_open){
         //open
@@ -460,7 +448,7 @@ void BallGateControl (bool _open){ //puts ball into play NOT DONE
         //Serial.println("RUNNING: gate closed");
         //close
     }
-}
+}*/
 
 void PopBumperControl(int _popBumper, int _popBumperSwitch, int _points){ 
 
