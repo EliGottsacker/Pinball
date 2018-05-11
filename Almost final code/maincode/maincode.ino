@@ -73,6 +73,8 @@ const int freeBallPoints = 200;
 
 // PUBLIC VARs and setup
 
+const bool inputLogging = true;
+
 int scoreRecord;
 int score;// the score for a inivial game
 int coinsCounted; // the total coin in the maching
@@ -430,13 +432,13 @@ void LedGridLightUP(){
 
 
 void ElectronicsLoop(){
-    SlingshotControl(slingshotOne, slingshotOneSwitch, pointsForSlingShot);
-    SlingshotControl(slingshotTwo, slingshotTwoSwitch, pointsForSlingShot);
-    PopBumperControl(popBumperOne, popBumperOneSwitch, pointsForPopBumper);
-    PopBumperControl(popBumperTwo, popBumperTwoSwitch, pointsForPopBumper);
-    PopBumperControl(popBumperThree, popBumperThreeSwitch, pointsForPopBumper);
-    FlipperControl(flipperLeftPowerCoil, flipperLeftHoldCoil, flipperLeftPowerSwitch, flipperLeftHoldSwitch);
-    FlipperControl(flipperRightPowerCoil, flipperRightHoldCoil, flipperRightPowerSwitch, flipperRightHoldSwitch);
+    SlingshotControl("Slingshot one", slingshotOne, slingshotOneSwitch, pointsForSlingShot);
+    SlingshotControl("Slingshot two", slingshotTwo, slingshotTwoSwitch, pointsForSlingShot);
+    PopBumperControl("PopBumper one", popBumperOne, popBumperOneSwitch, pointsForPopBumper);
+    PopBumperControl("PopBumper two", popBumperTwo, popBumperTwoSwitch, pointsForPopBumper);
+    PopBumperControl("PopBumper three", popBumperThree, popBumperThreeSwitch, pointsForPopBumper);
+    FlipperControl("Flipper left", flipperLeftPowerCoil, flipperLeftHoldCoil, flipperLeftPowerSwitch, flipperLeftHoldSwitch);
+    FlipperControl("Flipper right", flipperRightPowerCoil, flipperRightHoldCoil, flipperRightPowerSwitch, flipperRightHoldSwitch);
 }
 
 /*
@@ -451,7 +453,11 @@ void BallGateControl (bool _open){ //puts ball into play NOT DONE
     }
 }*/
 
-void PopBumperControl(int _popBumper, int _popBumperSwitch, int _points){ 
+void PopBumperControl(String which, int _popBumper, int _popBumperSwitch, int _points){
+
+   if (inputLogging == true) {
+     Serial.println(which + " triggered");
+   }
 
     int buttonState = 1; // variable for reading the pushbutton status
     // read the state of the pushbutton value:
@@ -502,7 +508,7 @@ void UseLED(int _ledPin,  int _mode){//NOT DONE
     }
 }
 
-void FlipperControl(int _flipperPowerCoil, int _flipperHoldCoil, int _flipperPowerSwitch, int _flipperHoldSwitch) {
+void FlipperControl(String which, int _flipperPowerCoil, int _flipperHoldCoil, int _flipperPowerSwitch, int _flipperHoldSwitch) {
 
     int buttonState = 1;
     int button2State = 1;
@@ -510,12 +516,16 @@ void FlipperControl(int _flipperPowerCoil, int _flipperHoldCoil, int _flipperPow
     buttonState = digitalRead(_flipperPowerSwitch);
     button2State = digitalRead(_flipperHoldSwitch);
 
-    if (button2State == HIGH) {
-      Serial.print("Flipper switch detected");
+    if (inputLogging == true) {
+
+    if (button2State == HIGH) {   
+     Serial.println(which + " hold switch triggered");
     }
 
     if (buttonState == HIGH) {
-      Serial.print("Flipper button detected");
+      Serial.println(which + " button detected");
+    }
+
     }
 
     // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
@@ -531,7 +541,7 @@ void FlipperControl(int _flipperPowerCoil, int _flipperHoldCoil, int _flipperPow
     }
 }
 
-void SlingshotControl(int _slingshot, int _slingshotSwitch, int _points) {//NOT DONE
+void SlingshotControl(String which, int _slingshot, int _slingshotSwitch, int _points) {//NOT DONE
 
     int buttonState = 1; // variable for reading the pushbutton status
     // read the state of the pushbutton value:
@@ -540,9 +550,9 @@ void SlingshotControl(int _slingshot, int _slingshotSwitch, int _points) {//NOT 
     // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
     if (buttonState == HIGH) {
         // turn LED on:
-        Serial.print("Running slingshot control: ");
-        Serial.print(_slingshotSwitch);
-        Serial.print(" ");
+        if (inputLogging == true) {
+        Serial.print(which + " triggered");
+        }
         //AddScore(_points);
         digitalWrite(_slingshot, HIGH);
         delay(40);
