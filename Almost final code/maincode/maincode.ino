@@ -191,20 +191,23 @@ void GameControl(){
 
     if (ballState == HIGH){
         if (ballCounted == false){
-          if (gameClock-recentLostBall < 200) {//make sure that bounced ball is not counted twice
+          if (gameClock-recentLostBall < 3000) {//make sure that bounced ball is not counted twice
             ballsRemaining -= 1;
             ballCounted = true;
+            delay(1000);//delay after ball is detected
+            if (ballsRemaining > 0) {
+              ReleaseBall();
+            }
           }
         }
     } else {
-        ballCounted = false;
+      ballCounted = false;
     }
 
     //this checks if requarments to start the game has been reheched and
     if (gameState == true){
         if (score > freeBallPointsTracker){
             AddBalls(freeBalls);
-            ReleaseBall();
             freeBallPointsTracker = score + freeBallPoints;
         }
         DisplayInt(score);
@@ -231,9 +234,7 @@ void StartGame(){
     message = "aaaaaa";
 
     AddBalls(newBalls);
-    for (int i = 0; i < newBalls; i++) {//release all balls
-        ReleaseBall();
-    }
+    ReleaseBall();
 }
 
 void AddBalls(int _ballsToAdd){
