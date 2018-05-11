@@ -1,0 +1,32 @@
+// constants won't change. They're used here to set pin numbers:
+const int popBumperOneSwitch = A0; // the number of the switch pin
+const int popBumperOne = 5; // the number of the popBumper pin
+//const int popBumperOneLED = 14; // the number of the popBumperLED pin
+
+const int popBumperTwoSwitch = A1; // the number of the switch pin
+const int popBumperTwo = 6; // the number of the popBumper pin
+//const int popBumperTwoLED = 15; // the number of the popBumperLED pin
+
+
+const int popBumperThreeSwitch = A2; // the number of the switch pin
+const int popBumperThree = 7; // the number of the popBumper pin
+//const int popBumperThreeLED = 16; // the number of the popBumperLED pin
+
+const int flipperRightHoldSwitch = A15; // the number of the switch pin
+const int flipperRightHoldCoil = 8; //
+const int flipperRightPowerSwitch = A4; //
+const int flipperRightPowerCoil = 11; // the number of the flipper pin
+
+const int flipperLeftHoldSwitch = A8; // the number of the switch pin
+const int flipperLeftHoldCoil = 10; //
+
+const int flipperLeftPowerSwitch = A11; //
+const int flipperLeftPowerCoil = 9; // the number of the flipper pin
+
+const int slingshotOneSwitch = A6; // the number of the switch pin
+const int slingshotOne = 3; // the number of the slingshot pin
+//const int slingshotOneLED = 17; // the number of the slingshotLED pin
+
+const int slingshotTwoSwitch = A7; // the number of the switch pin
+const int slingshotTwo = 4; // the number of the slingshot pin
+//const int slingshotLeftLED = 18; // the number of the slingshotLED pin
