@@ -295,9 +295,6 @@ comb = "8";
 if (getChar == 9) {
 comb = "9";
 }
-if (getChar != 0 && getChar != 1 && getChar != 2 && getChar != 3 && getChar != 4 && getChar != 5 && getChar != 6 && getChar != 7 && getChar != 8 && getChar != 9) {
-Serial.println("SOMETHING HAS GONE HORRIBLY WRONG IF THIS PRINTS");
-}
 setstring = comb + comb2;
 //setstring = String(getChar) + setstring;
 }
@@ -307,8 +304,11 @@ setstring = comb + comb2;
 for (int i = 0; i < 5-setLength; i++) {
 setstring = "a"+setstring;
 }
-
+if (setstring == "aaaa0") {
+message = "aaaaa0";
+} else {
 message = setstring+"0";
+}
 //Serial.print(message);
 }
 
