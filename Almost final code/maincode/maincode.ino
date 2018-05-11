@@ -12,44 +12,35 @@
 *
 */
 
+//pop bumpers
+const int popBumperOneSwitch = A0;
+const int popBumperOne = 52;
 
-//*****************************************************************************************************************
-// Decare these varible to the corisopning Aurdino pins and wanted vaules for tuning game play exsperence
+const int popBumperTwoSwitch = A4;
+const int popBumperTwo = 44;
 
+const int popBumperThreeSwitch = A2;
+const int popBumperThree = 48;
 
-// constants won't change. They're used here to set pin numbers:
-const int popBumperOneSwitch = A0; // the number of the switch pin
-const int popBumperOne = 5; // the number of the popBumper pin
-//const int popBumperOneLED = 14; // the number of the popBumperLED pin
+//flippers
+const int flipperRightHoldSwitch = A9;
+const int flipperRightHoldCoil = 40;
+const int flipperRightPowerSwitch = A11;
+const int flipperRightPowerCoil = 36;
 
-const int popBumperTwoSwitch = A1; // the number of the switch pin
-const int popBumperTwo = 6; // the number of the popBumper pin
-//const int popBumperTwoLED = 15; // the number of the popBumperLED pin
+const int flipperLeftHoldSwitch = A6;
+const int flipperLeftHoldCoil = 32;
+const int flipperLeftPowerSwitch = A7;
+const int flipperLeftPowerCoil = 28;
 
+//slingshots
+const int slingshotOneSwitch = A13;
+const int slingshotOne = 24;
 
-const int popBumperThreeSwitch = A2; // the number of the switch pin
-const int popBumperThree = 7; // the number of the popBumper pin
-//const int popBumperThreeLED = 16; // the number of the popBumperLED pin
+const int slingshotTwoSwitch = A15;
+const int slingshotTwo = 22;
 
-const int flipperRightHoldSwitch = A15; // the number of the switch pin
-const int flipperRightHoldCoil = 8; //
-const int flipperRightPowerSwitch = A4; //
-const int flipperRightPowerCoil = 11; // the number of the flipper pin
-
-const int flipperLeftHoldSwitch = A8; // the number of the switch pin
-const int flipperLeftHoldCoil = 10; //
-
-const int flipperLeftPowerSwitch = A11; //
-const int flipperLeftPowerCoil = 9; // the number of the flipper pin
-
-const int slingshotOneSwitch = A6; // the number of the switch pin
-const int slingshotOne = 3; // the number of the slingshot pin
-//const int slingshotOneLED = 17; // the number of the slingshotLED pin
-
-const int slingshotTwoSwitch = A7; // the number of the switch pin
-const int slingshotTwo = 4; // the number of the slingshot pin
-//const int slingshotLeftLED = 18; // the number of the slingshotLED pin
-
+//more
 const int gatePin = 103;
 const int openTime = 1;
 
@@ -57,8 +48,8 @@ const int coinDetect = 100;
 const int ballDeathSwith = 101;
 const int startButton = 102;
 
-const int newBalls = 5; //the number of new ball per pament
-const int minCoinsRequerd = 1; // minnum coins requard to get balls
+const int newBalls = 5;
+const int minCoinsRequerd = 1;
 
 //points
 const int pointsForPopBumper = 1;
@@ -537,7 +528,7 @@ void SlingshotControl(String which, int _slingshot, int _slingshotSwitch, int _p
     if (buttonState == HIGH) {
         // turn LED on:
         if (inputLogging == true) {
-        Serial.print("RUNNING: " + which + " triggered");
+        Serial.println("RUNNING: " + which + " triggered");
         }
         //AddScore(_points);
         digitalWrite(_slingshot, HIGH);
