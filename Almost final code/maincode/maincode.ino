@@ -12,6 +12,13 @@
 *
 */
 
+#include <Servo.h>  // servo library
+
+Servo servo1;  // servo control object
+
+int angle; 
+
+
  //pop bumpers
 const int popBumperOneSwitch = A0;
 const int popBumperOne = 52;
@@ -49,12 +56,10 @@ const int led5 = 35;
 const int led6 = 31;
 
 //more
-const int gatePin = 103;
-const int openTime = 1;
+const int gatePin = 53;
 
 const int coinDetect = 100;
-const int ballDeathSwith = 101;
-const int startButton = 102;
+const int ballDeathSwith = 7;
 
 //stuff
 const int newBalls = 5;
@@ -92,6 +97,9 @@ bool gameState;
 //int money;
 
 void setup() {
+
+servo1.attach(gatePin, 900, 2100);
+  
     // initialize the LED pin as an output:
     pinMode(popBumperOne, OUTPUT);
     pinMode(popBumperTwo, OUTPUT);
@@ -120,7 +128,6 @@ void setup() {
     pinMode(slingshotTwoSwitch, INPUT);
 
     pinMode(coinDetect, INPUT);
-    pinMode(startButton, INPUT);
     pinMode(ballDeathSwith, INPUT);
 
     pinMode(led1, OUTPUT);
@@ -138,8 +145,7 @@ void setup() {
     Serial1.flush(); // flush communication
 }
 
-
-void loop(){
+void loop(){ 
 
     GameControl();
 
@@ -169,7 +175,6 @@ void loop(){
 void GameControl(){
     bool coinCounted;
     int coinDetected = digitalRead(coinDetect);
-    int startPushed = digitalRead(startButton);
     int ballState = digitalRead(ballDeathSwith);
     bool ballCounted;
 
@@ -201,6 +206,7 @@ void GameControl(){
     }
 
     if (ballState == HIGH){
+      Serial.println("INPUT: Ball death triggered");
         if (ballCounted == false){
           if (gameClock-recentLostBall < 3000) {//make sure that bounced ball is not counted twice
             ballsRemaining -= 1;
@@ -253,11 +259,10 @@ void AddBalls(int _ballsToAdd){
     Serial.println("LOGIC: Balls have been added");
 }
 
-void ReleaseBall() {/*//UNFINISHED
-  digitalWrite(gatePin, HIGH);
-  Serial.println("RUNNING: gate open new ball released");
-  delay(100);
-  digitalWrite(gatePin, LOW);*/
+void ReleaseBall() {
+  servo1.write(180);
+  delay(1500);
+  servo1.write(0);
 }
 
 void AddScore(int _score){
