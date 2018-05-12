@@ -12,7 +12,7 @@
 *
 */
 
-//pop bumpers
+ //pop bumpers
 const int popBumperOneSwitch = A0;
 const int popBumperOne = 52;
 
@@ -40,6 +40,14 @@ const int slingshotOne = 24;
 const int slingshotTwoSwitch = A15;
 const int slingshotTwo = 22;
 
+//leds
+const int led1 = 51;
+const int led2 = 47;
+const int led3 = 43;
+const int led4 = 39;
+const int led5 = 35;
+const int led6 = 31;
+
 //more
 const int gatePin = 103;
 const int openTime = 1;
@@ -48,6 +56,7 @@ const int coinDetect = 100;
 const int ballDeathSwith = 101;
 const int startButton = 102;
 
+//stuff
 const int newBalls = 5;
 const int minCoinsRequerd = 1;
 
@@ -114,6 +123,13 @@ void setup() {
     pinMode(startButton, INPUT);
     pinMode(ballDeathSwith, INPUT);
 
+    pinMode(led1, OUTPUT);
+    pinMode(led2, OUTPUT);
+    pinMode(led3, OUTPUT);
+    pinMode(led4, OUTPUT);
+    pinMode(led5, OUTPUT);
+    pinMode(led6, OUTPUT);
+
     //initialize Serial comuticion
     Serial.begin(9600); // start serial communication at 9600bps with USB port
     Serial1.begin(9600); // start serial1 communication at 9600bps with screen control aduino
@@ -138,6 +154,8 @@ void loop(){
       gameClock = 0;
       recentLostBall -= 10000;
     }
+
+    LedGridLightUP();
 }
 
 
@@ -390,21 +408,21 @@ bool RollOverSwichLogic(int _inputPin){// NOT TESTED will take in a pin and maki
 }
 
 void LedGridLightUP(){
-    int myLeds[] = {};
+    int myLeds[6] = {led1,led2,led3,led4,led5,led6};
     int myLedsSize = sizeof(myLeds);
     int lights; 
-    if (gameState == true){
+    /*if (gameState == true){
         if (score > freeBallPointsTracker){
             lights++;
-        }
+        }*/
         for(int i; i <= myLedsSize; i++){
             digitalWrite(myLeds[i], HIGH);
         }
-    } else {
+   /* } else {
         for(int i; i <= myLedsSize; i++){
             digitalWrite(myLeds[i], LOW);
         }
-    }
+    }*/
 }
 
 
