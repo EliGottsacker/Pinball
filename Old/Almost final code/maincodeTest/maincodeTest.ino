@@ -12,7 +12,14 @@
 *
 */
 
-//pop bumpers
+#include <Servo.h>  // servo library
+
+Servo servo1;  // servo control object
+
+int angle;
+
+
+ //pop bumpers
 const int popBumperOneSwitch = A0;
 const int popBumperOne = 52;
 
@@ -40,14 +47,21 @@ const int slingshotOne = 24;
 const int slingshotTwoSwitch = A15;
 const int slingshotTwo = 22;
 
+//leds
+const int led1 = 51;
+const int led2 = 47;
+const int led3 = 43;
+const int led4 = 39;
+const int led5 = 35;
+const int led6 = 31;
+
 //more
-const int gatePin = 103;
-const int openTime = 1;
+const int gatePin = 53;
 
 const int coinDetect = 100;
-const int ballDeathSwith = 101;
-const int startButton = 102;
+const int ballDeathSwith = 7;
 
+//stuff
 const int newBalls = 5;
 const int minCoinsRequerd = 1;
 
@@ -83,6 +97,9 @@ bool gameState;
 //int money;
 
 void setup() {
+
+servo1.attach(gatePin, 900, 2100);
+
     // initialize the LED pin as an output:
     pinMode(popBumperOne, OUTPUT);
     pinMode(popBumperTwo, OUTPUT);
@@ -111,8 +128,14 @@ void setup() {
     pinMode(slingshotTwoSwitch, INPUT);
 
     pinMode(coinDetect, INPUT);
-    pinMode(startButton, INPUT);
     pinMode(ballDeathSwith, INPUT);
+
+    pinMode(led1, OUTPUT);
+    pinMode(led2, OUTPUT);
+    pinMode(led3, OUTPUT);
+    pinMode(led4, OUTPUT);
+    pinMode(led5, OUTPUT);
+    pinMode(led6, OUTPUT);
 
     //initialize Serial comuticion
     Serial.begin(9600); // start serial communication at 9600bps with USB port
@@ -122,13 +145,12 @@ void setup() {
     Serial1.flush(); // flush communication
 }
 
-
 void loop(){
 
     GameControl();
 
     ElectronicsLoop();
-    
+
     ToDisplay(message);
 
     delay(50);
@@ -138,6 +160,8 @@ void loop(){
       gameClock = 0;
       recentLostBall -= 10000;
     }
+
+    LedGridLightUP();
 }
 
 
@@ -151,14 +175,10 @@ void loop(){
 void GameControl(){
     bool coinCounted;
     int coinDetected = digitalRead(coinDetect);
-    int startPushed = digitalRead(startButton);
     int ballState = digitalRead(ballDeathSwith);
     bool ballCounted;
 
     message = "000000";
-
-
-    //Serial.read()
 
     coins = 1;
 
@@ -183,6 +203,7 @@ void GameControl(){
     }
 
     if (ballState == HIGH){
+      Serial.println("INPUT: Ball death triggered");
         if (ballCounted == false){
           if (gameClock-recentLostBall < 3000) {//make sure that bounced ball is not counted twice
             ballsRemaining -= 1;
@@ -215,7 +236,7 @@ void GameControl(){
         } else {
             setMessage("aaaaaa");//not enough coins coins
         }
-    }  
+    }
 }
 
 void StartGame(){
@@ -235,11 +256,10 @@ void AddBalls(int _ballsToAdd){
     Serial.println("LOGIC: Balls have been added");
 }
 
-void ReleaseBall() {/*//UNFINISHED
-  digitalWrite(gatePin, HIGH);
-  Serial.println("RUNNING: gate open new ball released");
-  delay(100);
-  digitalWrite(gatePin, LOW);*/
+void ReleaseBall() {
+  servo1.write(180);
+  delay(1500);
+  servo1.write(0);
 }
 
 void AddScore(int _score){
@@ -251,114 +271,102 @@ void AddScore(int _score){
 }
 
 void DisplayInt(int score) {
-int setLength = 1;
-if (score > 9) {
-setLength = 2;
-}
-if (score > 99) {
-setLength = 3;
-}
-if (score > 999) {
-setLength = 4;
-}
-if (score > 9999) {
-setLength = 5;
-}
-if (score > 99999) {
-setLength = 6;
-}
+  int setLength = 1;
+  if (score > 9) {
+    setLength = 2;
+  }
+  if (score > 99) {
+    setLength = 3;
+  }
+  if (score > 999) {
+    setLength = 4;
+  }
+  if (score > 9999) {
+    setLength = 5;
+  }
+  if (score > 99999) {
+    setLength = 6;
+  }
 
-String setstring;
-int getChar;
-String comb;
-String comb2;
+  String setstring;
+  int getChar;
+  String comb;
+  String comb2;
 
-for (int i = 0; i < setLength; i++) {
-getChar = 0;
-if (i == 0) {
-getChar = (score / 1U) % 10;
-}
-if (i == 1) {
-getChar = (score / 10U) % 10;
-}
-if (i == 2) {
-getChar = (score / 100U) % 10;
-}
-if (i == 3) {
-getChar = (score / 1000U) % 10;
-}
-if (i == 4) {
-getChar = (score / 10000U) % 10;
-}
-if (i == 5) {
-getChar = (score / 100000U) % 10;
-}
+  for (int i = 0; i < setLength; i++) {
+    getChar = 0;
 
-comb2 = setstring;
+    if (i == 0) {
+      getChar = (score / 1U) % 10;
+    }
+    if (i == 1) {
+      getChar = (score / 10U) % 10;
+    }
+    if (i == 2) {
+      getChar = (score / 100U) % 10;
+    }
+    if (i == 3) {
+      getChar = (score / 1000U) % 10;
+    }
+    if (i == 4) {
+      getChar = (score / 10000U) % 10;
+    }
+    if (i == 5) {
+      getChar = (score / 100000U) % 10;
+    }
 
-if (getChar == 0) {
-comb = "0";
-}
-if (getChar == 1) {
-comb = "1";
-}
-if (getChar == 2) {
-comb = "2";
-}
-if (getChar == 3) {
-comb = "3";
-}
-if (getChar == 4) {
-comb = "4";
-}
-if (getChar == 5) {
-comb = "5";
-}
-if (getChar == 6) {
-comb = "6";
-}
-if (getChar == 7) {
-comb = "7";
-}
-if (getChar == 8) {
-comb = "8";
-}
-if (getChar == 9) {
-comb = "9";
-}
-setstring = comb + comb2;
-}
+    comb2 = setstring;
 
-for (int i = 0; i < 5-setLength; i++) {
-setstring = "a"+setstring;
-}
-if (setstring == "aaaa0") {
-message = "aaaaa0";
-} else {
-message = setstring+"0";
-}
+    if (getChar == 0) {
+      comb = "0";
+    }
+    if (getChar == 1) {
+      comb = "1";
+    }
+    if (getChar == 2) {
+      comb = "2";
+    }
+    if (getChar == 3) {
+      comb = "3";
+    }
+    if (getChar == 4) {
+      comb = "4";
+    }
+    if (getChar == 5) {
+      comb = "5";
+    }
+    if (getChar == 6) {
+      comb = "6";
+    }
+    if (getChar == 7) {
+      comb = "7";
+    }
+    if (getChar == 8) {
+      comb = "8";
+    }
+    if (getChar == 9) {
+      comb = "9";
+    }
+    setstring = comb + comb2;
+  }
+
+  for (int i = 0; i < 5-setLength; i++) {
+    setstring = "a"+setstring;
+  }
+  if (setstring == "aaaa0") {
+    message = "aaaaa0";
+  } else {
+    message = setstring+"0";
+  }
 }
 
 void setMessage(String mess) {
-  //message[];
-  //for (int i = 0; i < sizeof(mess); i++) {
-  //  message[i] = mess[i];
-  //}
-message = mess;
+  message = mess;
 }
 
 void ToDisplay (String _inputString){ //could work for length 6 to 1
     int lengthInput = _inputString.length();
-    /*char setCharThing[6];*/
     String combine = "$PIN4"+_inputString;
-    /*if (combine.startsWith("$") == false) {
-      return true;
-    }*/
-    //Serial.println(combine);
-    /*combine.toCharArray(setCharThing, 12);*/
-
-    //Serial.println(setCharThing);
-
     if (true || (lengthInput < 7 && lengthInput > -1)){
         Serial1.print(combine);
         //Serial1.write(setCharThing);
@@ -388,11 +396,11 @@ bool RollOverSwichLogic(int _inputPin){// NOT TESTED will take in a pin and maki
         return false;
     }
 }
-
+/*
 void LedGridLightUP(){
-    int myLeds[] = {};
+    int myLeds[6] = {led1,led2,led3,led4,led5,led6};
     int myLedsSize = sizeof(myLeds);
-    int lights; 
+    int lights;
     if (gameState == true){
         if (score > freeBallPointsTracker){
             lights++;
@@ -406,7 +414,24 @@ void LedGridLightUP(){
         }
     }
 }
-
+*/
+void LedGridLightUP(){
+    int myLeds[6] = {led1,led2,led3,led4,led5,led6};
+    int myLedsSize = 6;
+    int lights;
+    if (gameState == true){
+        if (score > freeBallPointsTracker){
+            lights++;
+        }
+        for(int i; i <= myLedsSize; i++){
+            digitalWrite(myLeds[i], HIGH);
+        }
+    } else {
+        for(int i; i <= myLedsSize; i++){
+            digitalWrite(myLeds[i], LOW);
+        }
+    }
+}
 
 //******************************************************************************************************
 
@@ -495,7 +520,7 @@ void FlipperControl(String which, int _flipperPowerCoil, int _flipperHoldCoil, i
 
     if (inputLogging == true) {
 
-    if (button2State == HIGH) {   
+    if (button2State == HIGH) {
      Serial.println("RUNNING: " + which + " hold switch triggered");
     }
 
@@ -540,4 +565,3 @@ void SlingshotControl(String which, int _slingshot, int _slingshotSwitch, int _p
         digitalWrite(_slingshot, LOW);
     }
 }
-
