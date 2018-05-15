@@ -92,6 +92,7 @@ int gameClock = 0;//this is used to make sure a lost ball does not get counted t
 int recentLostBall = 0;
 
 bool gameState;
+bool gameRunning;
 
 
 //int money;
@@ -172,6 +173,7 @@ void loop(){
 
 
 
+
 void GameControl(){
     bool coinCounted;
     int coinDetected = digitalRead(coinDetect);
@@ -182,68 +184,70 @@ void GameControl(){
 
     coins = 1;
 
-    if (coinDetected == HIGH) {//if coin sensor is on
-        if(coinCounted == false){//and we have not counted it yet
-            coinsCounted++;
-            coins++;
-            coinCounted = true;//count it
-            Serial.println("LOGIC: Coin counted");
-        }
-    } else if (coinDetected == LOW) {//if sensor is off
-        coinCounted = false;//let us count it next time
+    Always();
+    if (gameState == true){
+      During();
+    } else {
+      Waiting();
     }
+}
 
-    //this closesn the gate if all balls have been used
-    if (ballsRemaining < 1){
-      if (gameState == true) {
-        //BallGateControl(false);//no need to close gate
-        gameState = false;
-        Serial.println("LOGIC: Game ended");
-      }
-    }
+void During(){
 
-    if (ballState == HIGH){
-      Serial.println("INPUT: Ball death triggered");
-        if (ballCounted == false){
-          if (gameClock-recentLostBall < 3000) {//make sure that bounced ball is not counted twice
-            ballsRemaining -= 1;
-            ballCounted = true;
-            delay(1000);//delay after ball is detected
-            if (ballsRemaining > 0) {
-              ReleaseBall();
-            }
+  DisplayInt(score);
+
+  if (ballsRemaining < 1){
+    gameState = false;
+    Serial.println("LOGIC: Game ended");
+  }
+
+  if (ballState == HIGH){
+    Serial.println("INPUT: Ball death triggered");
+      if (ballCounted == false){
+        if (gameClock-recentLostBall < 3000) {//make sure that bounced ball is not counted twice
+          ballsRemaining -= 1;
+          ballCounted = true;
+          delay(1000);//delay after ball is detected
+          if (ballsRemaining > 0) {
+            ReleaseBall();
           }
         }
-    } else {
-      ballCounted = false;
-    }
+      }
+  } else {
+    ballCounted = false;
+  }
+  if (score > freeBallPointsTracker){
+      AddBalls(freeBalls);
+      freeBallPointsTracker = score + freeBallPoints;
+  }
 
-    //this checks if requarments to start the game has been reheched and
-    if (gameState == true){
-        if (score > freeBallPointsTracker){
-            AddBalls(freeBalls);
-            freeBallPointsTracker = score + freeBallPoints;
-        }
-        DisplayInt(score);
-    } else {
-        if (coins >= minCoinsRequerd){
-            //if (startPushed == HIGH){
-                coins -= minCoinsRequerd;
-                StartGame();
-            //} else {
-            //    setMessage("aaaaaa");//enough coins
-            //}
-        } else {
-            setMessage("aaaaaa");//not enough coins coins
-        }
+}
+void Waiting(){
+  if (coins >= minCoinsRequerd){
+    coins -= minCoinsRequerd;
+    StartGame();
+  } else {
+      setMessage("aaaaaa");//not enough coins coins
+  }
+}
+void Always(){
+  if (coinDetected == HIGH) {//if coin sensor is on
+    if(coinCounted == false){//and we have not counted it yet
+      coinsCounted++;
+      coins++;
+      coinCounted = true;//count it
+      Serial.println("LOGIC: Coin counted");
     }
+  } else if (coinDetected == LOW) {//if sensor is off
+      coinCounted = false;//let us count it next time
+  }
 }
 
 void StartGame(){
     Serial.println("LOGIC: Starting new game");
 
     //resets varible to defalt states
-    gameState = true;
+    gameRunning = true;
     score = 0;
     message = "aaaaaa";
 
