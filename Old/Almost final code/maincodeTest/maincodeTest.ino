@@ -61,9 +61,11 @@ const int gatePin = 53;
 const int coinDetect = 100;
 const int ballDeathSwith = 7;
 
-//stuff
-const int newBalls = 5;
+//coin constents
 const int minCoinsRequerd = 1;
+
+const int newBalls = 5;
+
 
 //points
 const int pointsForPopBumper = 1;
@@ -74,11 +76,14 @@ const int pointsForRollOver = 1;
 const int freeBalls = 1;
 const int freeBallPoints = 200;
 
+//debugging flages
+const bool inputLogging = true; //Enable this to check if inputs are working
+
 //***************************************************************************************************************
 
 // PUBLIC VARs and setup
 
-const bool inputLogging = true; //Enable this to check if inputs are working
+
 
 int scoreRecord;
 int score;// the score for a inivial game
@@ -94,56 +99,62 @@ int recentLostBall = 0;
 bool gameState;
 bool gameRunning;
 
+//ledgrid
+int myLedsSize = 6;
+int myLeds[2][6] = {
+  {led1,led2,led3,led4,led5,led6},
+  {1,1,1,1,1,1}//led states
+};
 
 //int money;
 
 void setup() {
 
-servo1.attach(gatePin, 900, 2100);
+  servo1.attach(gatePin, 900, 2100);
 
-    // initialize the LED pin as an output:
-    pinMode(popBumperOne, OUTPUT);
-    pinMode(popBumperTwo, OUTPUT);
-    pinMode(popBumperThree, OUTPUT);
+  // initialize the LED pin as an output:
+  pinMode(popBumperOne, OUTPUT);
+  pinMode(popBumperTwo, OUTPUT);
+  pinMode(popBumperThree, OUTPUT);
 
-    pinMode(flipperRightPowerCoil, OUTPUT);
-    pinMode(flipperRightHoldCoil, OUTPUT);
+  pinMode(flipperRightPowerCoil, OUTPUT);
+  pinMode(flipperRightHoldCoil, OUTPUT);
 
-    pinMode(flipperLeftPowerCoil, OUTPUT);
-    pinMode(flipperLeftHoldCoil, OUTPUT);
+  pinMode(flipperLeftPowerCoil, OUTPUT);
+  pinMode(flipperLeftHoldCoil, OUTPUT);
 
-    pinMode(slingshotOne, OUTPUT);
-    pinMode(slingshotTwo, OUTPUT);
+  pinMode(slingshotOne, OUTPUT);
+  pinMode(slingshotTwo, OUTPUT);
 
-    // initialize the pushbutton pin as an input:
-    pinMode(popBumperOneSwitch, INPUT);
-    pinMode(popBumperTwoSwitch, INPUT);
-    pinMode(popBumperOneSwitch, INPUT);
+  // initialize the pushbutton pin as an input:
+  pinMode(popBumperOneSwitch, INPUT);
+  pinMode(popBumperTwoSwitch, INPUT);
+  pinMode(popBumperOneSwitch, INPUT);
 
-    pinMode(flipperRightHoldSwitch, INPUT);
-    pinMode(flipperLeftHoldSwitch, INPUT);
-    pinMode(flipperRightPowerSwitch, INPUT);
-    pinMode(flipperLeftPowerSwitch, INPUT);
+  pinMode(flipperRightHoldSwitch, INPUT);
+  pinMode(flipperLeftHoldSwitch, INPUT);
+  pinMode(flipperRightPowerSwitch, INPUT);
+  pinMode(flipperLeftPowerSwitch, INPUT);
 
-    pinMode(slingshotOneSwitch, INPUT);
-    pinMode(slingshotTwoSwitch, INPUT);
+  pinMode(slingshotOneSwitch, INPUT);
+  pinMode(slingshotTwoSwitch, INPUT);
 
-    pinMode(coinDetect, INPUT);
-    pinMode(ballDeathSwith, INPUT);
+  pinMode(coinDetect, INPUT);
+  pinMode(ballDeathSwith, INPUT);
 
-    pinMode(led1, OUTPUT);
-    pinMode(led2, OUTPUT);
-    pinMode(led3, OUTPUT);
-    pinMode(led4, OUTPUT);
-    pinMode(led5, OUTPUT);
-    pinMode(led6, OUTPUT);
+  pinMode(led1, OUTPUT);
+  pinMode(led2, OUTPUT);
+  pinMode(led3, OUTPUT);
+  pinMode(led4, OUTPUT);
+  pinMode(led5, OUTPUT);
+  pinMode(led6, OUTPUT);
 
-    //initialize Serial comuticion
-    Serial.begin(9600); // start serial communication at 9600bps with USB port
-    Serial1.begin(9600); // start serial1 communication at 9600bps with screen control aduino
+  //initialize Serial comuticion
+  Serial.begin(9600); // start serial communication at 9600bps with USB port
+  Serial1.begin(9600); // start serial1 communication at 9600bps with screen control aduino
 
-    Serial.flush(); // flush communication
-    Serial1.flush(); // flush communication
+  Serial.flush(); // flush communication
+  Serial1.flush(); // flush communication
 }
 
 void loop(){
@@ -162,7 +173,7 @@ void loop(){
       recentLostBall -= 10000;
     }
 
-    LedGridLightUP();
+    //LedGridLightUP();
 }
 
 
@@ -175,10 +186,6 @@ void loop(){
 
 
 void GameControl(){
-    bool coinCounted;
-    int coinDetected = digitalRead(coinDetect);
-    int ballState = digitalRead(ballDeathSwith);
-    bool ballCounted;
 
     message = "000000";
 
@@ -193,6 +200,9 @@ void GameControl(){
 }
 
 void During(){
+  int ballState = digitalRead(ballDeathSwith);
+  bool ballCounted;
+
 
   DisplayInt(score);
 
@@ -231,6 +241,8 @@ void Waiting(){
   }
 }
 void Always(){
+  bool coinCounted;
+  int coinDetected = digitalRead(coinDetect);
   if (coinDetected == HIGH) {//if coin sensor is on
     if(coinCounted == false){//and we have not counted it yet
       coinsCounted++;
@@ -364,7 +376,7 @@ void DisplayInt(int score) {
   }
 }
 
-void setMessage(String mess) {
+void setMessage(String mess) {//why?
   message = mess;
 }
 
@@ -373,9 +385,7 @@ void ToDisplay (String _inputString){ //could work for length 6 to 1
     String combine = "$PIN4"+_inputString;
     if (true || (lengthInput < 7 && lengthInput > -1)){
         Serial1.print(combine);
-        //Serial1.write(setCharThing);
         Serial1.write('\n');
-        //Serial.println(_inputChar);
 
     } else if (lengthInput > 6){// not supported yet.
         Serial.println("ERROR: string value too long");
@@ -401,15 +411,15 @@ bool RollOverSwichLogic(int _inputPin){// NOT TESTED will take in a pin and maki
     }
 }
 /*
-void LedGridLightUP(){
+void LedGridLightUP(int _manual){
     int myLeds[6] = {led1,led2,led3,led4,led5,led6};
-    int myLedsSize = sizeof(myLeds);
+    int myLedsSize = 6;
     int lights;
     if (gameState == true){
-        if (score > freeBallPointsTracker){
+        if (score > ){
             lights++;
         }
-        for(int i; i <= myLedsSize; i++){
+        for(int i; i <= myLedsSize && i <= lights; i++){
             digitalWrite(myLeds[i], HIGH);
         }
     } else {
@@ -419,34 +429,32 @@ void LedGridLightUP(){
     }
 }
 */
-void LedGridLightUP(){
-    int myLeds[6] = {led1,led2,led3,led4,led5,led6};
-    int myLedsSize = 6;
-    int lights;
-    if (gameState == true){
-        if (score > freeBallPointsTracker){
-            lights++;
-        }
-        for(int i; i <= myLedsSize; i++){
-            digitalWrite(myLeds[i], HIGH);
-        }
-    } else {
-        for(int i; i <= myLedsSize; i++){
-            digitalWrite(myLeds[i], LOW);
-        }
+void LedStateControl(){
+  if (gameState == true){
+    if (score > nextLed){
+      lights++;
     }
+    for(int i; i <= myLedsSize && i <= lights; i++){
+      myLeds[2][i] = 1;
+    }
+  } else {
+    for(int i; i <= myLedsSize; i++){
+      myLeds[2][i] = 0;
+    }//
+  }
+}
+
+void LedLightControl(int _lightsWanted){
+  for(int i; i <= myLedsSize; i++){
+    if (myLeds[2][i] == 1){digitalWrite(myLeds[1][i], HIGH);}
+    else if (myLeds[2][i] == 0) { digitalWrite(myLeds[1][i], LOW);}
+    else {Serial.println("ERROR: I did soming wrong with arrays in LedGridLightUP");}
+  }
 }
 
 //******************************************************************************************************
 
-
-
-
-
 // ELECTRONICS CONTROL
-
-
-
 
 
 
@@ -506,7 +514,6 @@ void UseLED(int _ledPin,  int _mode){//NOT DONE
     }else if (_mode == 3){ // LED bink DO NOT USE
         digitalWrite(_ledPin, HIGH);
     }
-
     if (LEDState){
         digitalWrite(_ledPin, HIGH);
     }else{
@@ -523,15 +530,8 @@ void FlipperControl(String which, int _flipperPowerCoil, int _flipperHoldCoil, i
     button2State = digitalRead(_flipperHoldSwitch);
 
     if (inputLogging == true) {
-
-    if (button2State == HIGH) {
-     Serial.println("RUNNING: " + which + " hold switch triggered");
-    }
-
-    if (buttonState == HIGH) {
-      Serial.println("RUNNING: " + which + " button detected");
-    }
-
+      if (button2State == HIGH) {Serial.println("RUNNING: " + which + " hold switch triggered");}
+      if (buttonState == HIGH) {Serial.println("RUNNING: " + which + " button detected");}
     }
 
     // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
