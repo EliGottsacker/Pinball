@@ -19,7 +19,7 @@ Servo servo1;  // servo control object
 int angle;
 
 
- //pop bumpers
+//pop bumpers
 const int popBumperOneSwitch = A0;
 const int popBumperOne = 52;
 
@@ -168,6 +168,7 @@ void loop(){
     ElectronicsLoop();
 
     ToDisplay(message);
+    LedStuff();
 
     delay(50);
 
@@ -414,6 +415,10 @@ bool RollOverSwichLogic(int _inputPin){// NOT TESTED will take in a pin and maki
     }
 }
 
+void LedStuff(){
+  LedStateControl();
+  LedLightControl();
+}
 void LedStateControl(){
   int nextLed = pointsPerLed;
   if (ledsByScore == true){
@@ -433,7 +438,6 @@ void LedStateControl(){
     myLeds[2][i] = 0;
   }
 }
-
 void LedLightControl(){
   for(int i = 0; i <= myLedsSize; i++){
     if (myLeds[2][i] == 1){digitalWrite(myLeds[1][i], HIGH);}
