@@ -270,8 +270,8 @@ void StartGame(){
   ReleaseBall();
 }
 
-void endGame(){
-  //reset led to off
+void endGame(){//run once per game when over
+
 }
 
 void AddBalls(int _ballsToAdd){
