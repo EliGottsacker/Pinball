@@ -47,7 +47,7 @@ const int slingshotOne = 24;
 const int slingshotTwoSwitch = A15;
 const int slingshotTwo = 22;
 
-//leds
+//leds pins
 const int led1 = 51;
 const int led2 = 47;
 const int led3 = 43;
@@ -55,11 +55,13 @@ const int led4 = 39;
 const int led5 = 35;
 const int led6 = 31;
 
+const int pointsPerLed = 200;
+
 //more
-const int gatePin = 53;
+const int servo1pin = 53;
+const int ballDeathSwith = 7;
 
 const int coinDetect = 100;
-const int ballDeathSwith = 7;
 
 //coin constents
 const int minCoinsRequerd = 1;
@@ -78,6 +80,7 @@ const int freeBallPoints = 200;
 
 //debugging flages
 const bool inputLogging = true; //Enable this to check if inputs are working
+const bool ledsByScore = true;//will cause score to set how many leds
 
 //***************************************************************************************************************
 
@@ -86,12 +89,13 @@ const bool inputLogging = true; //Enable this to check if inputs are working
 
 
 int scoreRecord;
-int score;// the score for a inivial game
-int coinsCounted; // the total coin in the maching
-int coins; //
-int ballsRemaining;
+int score = 0;// the score for a inivial game
+int coinsCounted = 0; // the total coin in the maching
+int coins = 0; //
+int ballsRemaining = 0;
 String message;
 int freeBallPointsTracker = freeBallPoints;
+int lightsOn = 0;
 
 int gameClock = 0;//this is used to make sure a lost ball does not get counted twice (independent from game state);
 int recentLostBall = 0;
@@ -102,7 +106,7 @@ bool gameRunning;
 //ledgrid
 int myLedsSize = 6;
 int myLeds[2][6] = {
-  {led1,led2,led3,led4,led5,led6},
+  {led1,led2,led3,led4,led5,led6},//
   {1,1,1,1,1,1}//led states
 };
 
@@ -110,7 +114,7 @@ int myLeds[2][6] = {
 
 void setup() {
 
-  servo1.attach(gatePin, 900, 2100);
+  servo1.attach(servo1pin, 900, 2100);
 
   // initialize the LED pin as an output:
   pinMode(popBumperOne, OUTPUT);
@@ -184,11 +188,9 @@ void loop(){
 
 
 
-
 void GameControl(){
 
     message = "000000";
-
     coins = 1;
 
     Always();
@@ -203,26 +205,24 @@ void During(){
   int ballState = digitalRead(ballDeathSwith);
   bool ballCounted;
 
-
   DisplayInt(score);
 
   if (ballsRemaining < 1){
     gameState = false;
     Serial.println("LOGIC: Game ended");
   }
-
   if (ballState == HIGH){
     Serial.println("INPUT: Ball death triggered");
-      if (ballCounted == false){
-        if (gameClock-recentLostBall < 3000) {//make sure that bounced ball is not counted twice
-          ballsRemaining -= 1;
-          ballCounted = true;
-          delay(1000);//delay after ball is detected
-          if (ballsRemaining > 0) {
-            ReleaseBall();
-          }
+    if (ballCounted == false){
+      if (gameClock-recentLostBall < 3000) {//make sure that bounced ball is not counted twice
+        ballsRemaining -= 1;
+        ballCounted = true;
+        delay(1000);//delay after ball is detected
+        if (ballsRemaining > 0) {
+          ReleaseBall();
         }
       }
+    }
   } else {
     ballCounted = false;
   }
@@ -230,14 +230,16 @@ void During(){
       AddBalls(freeBalls);
       freeBallPointsTracker = score + freeBallPoints;
   }
-
 }
 void Waiting(){
   if (coins >= minCoinsRequerd){
     coins -= minCoinsRequerd;
     StartGame();
   } else {
-      setMessage("aaaaaa");//not enough coins coins
+    setMessage("aaaaaa");//not enough coins coins
+    for(int i = lightsOn; i <= myLedsSize; i++){
+      myLeds[2][i] = 0;
+    }
   }
 }
 void Always(){
@@ -256,22 +258,25 @@ void Always(){
 }
 
 void StartGame(){
-    Serial.println("LOGIC: Starting new game");
+  Serial.println("LOGIC: Starting new game");
 
-    //resets varible to defalt states
-    gameRunning = true;
-    score = 0;
-    message = "aaaaaa";
+  //resets varible to defalt states
+  gameRunning = true;
+  score = 0;
+  message = "aaaaaa";
 
-    AddBalls(newBalls);
-    ReleaseBall();
+  AddBalls(newBalls);
+  ReleaseBall();
+}
+
+void endGame(){
+  //reset led to off
 }
 
 void AddBalls(int _ballsToAdd){
-    ballsRemaining += _ballsToAdd;
-    Serial.println("LOGIC: Balls have been added");
+  ballsRemaining += _ballsToAdd;
+  Serial.println("LOGIC: Balls have been added");
 }
-
 void ReleaseBall() {
   servo1.write(180);
   delay(1500);
@@ -375,11 +380,9 @@ void DisplayInt(int score) {
     message = setstring+"0";
   }
 }
-
 void setMessage(String mess) {//why?
   message = mess;
 }
-
 void ToDisplay (String _inputString){ //could work for length 6 to 1
     int lengthInput = _inputString.length();
     String combine = "$PIN4"+_inputString;
@@ -410,42 +413,29 @@ bool RollOverSwichLogic(int _inputPin){// NOT TESTED will take in a pin and maki
         return false;
     }
 }
-/*
-void LedGridLightUP(int _manual){
-    int myLeds[6] = {led1,led2,led3,led4,led5,led6};
-    int myLedsSize = 6;
-    int lights;
-    if (gameState == true){
-        if (score > ){
-            lights++;
-        }
-        for(int i; i <= myLedsSize && i <= lights; i++){
-            digitalWrite(myLeds[i], HIGH);
-        }
-    } else {
-        for(int i; i <= myLedsSize; i++){
-            digitalWrite(myLeds[i], LOW);
-        }
-    }
-}
-*/
+
 void LedStateControl(){
-  if (gameState == true){
+  int nextLed = pointsPerLed;
+  if (ledsByScore == true){
     if (score > nextLed){
-      lights++;
+      lightsOn++;
+      nextLed = nextLed + score;
     }
-    for(int i; i <= myLedsSize && i <= lights; i++){
-      myLeds[2][i] = 1;
-    }
-  } else {
-    for(int i; i <= myLedsSize; i++){
-      myLeds[2][i] = 0;
-    }//
+  } else {lightsOn = myLedsSize;}
+  if (lightsOn > myLedsSize) {
+    lightsOn = 0;
+    Serial.println("Trying to light up too many leds!");
+  }
+  for(int i = 0; i <= lightsOn; i++){
+    myLeds[2][i] = 1;
+  }
+  for(int i = lightsOn; i <= myLedsSize; i++){
+    myLeds[2][i] = 0;
   }
 }
 
-void LedLightControl(int _lightsWanted){
-  for(int i; i <= myLedsSize; i++){
+void LedLightControl(){
+  for(int i = 0; i <= myLedsSize; i++){
     if (myLeds[2][i] == 1){digitalWrite(myLeds[1][i], HIGH);}
     else if (myLeds[2][i] == 0) { digitalWrite(myLeds[1][i], LOW);}
     else {Serial.println("ERROR: I did soming wrong with arrays in LedGridLightUP");}
@@ -492,32 +482,11 @@ void PopBumperControl(String which, int _popBumper, int _popBumperSwitch, int _p
     }
 }
 
-void RollOverSwichControl (int _rollOverSwich){
+void RollOverSwichControl (int _rollOverSwich){//not done
     bool swichState;
     swichState = RollOverSwichLogic(_rollOverSwich);
     if (swichState){
         AddScore(pointsForRollOver);
-    }
-}
-
-void UseLED(int _ledPin,  int _mode){//NOT DONE
-    bool LEDState;
-
-    if (_mode == 0){// LED off
-        LEDState = true;
-    } else if (_mode == 1){//LED on
-        LEDState = false;
-    } else if (_mode == 2) { // LED pulse
-        LEDState = true;
-        delay(40);//ajust time
-        LEDState = false;
-    }else if (_mode == 3){ // LED bink DO NOT USE
-        digitalWrite(_ledPin, HIGH);
-    }
-    if (LEDState){
-        digitalWrite(_ledPin, HIGH);
-    }else{
-        digitalWrite(_ledPin, LOW);
     }
 }
 
@@ -547,7 +516,7 @@ void FlipperControl(String which, int _flipperPowerCoil, int _flipperHoldCoil, i
     }
 }
 
-void SlingshotControl(String which, int _slingshot, int _slingshotSwitch, int _points) {//NOT DONE
+void SlingshotControl(String which, int _slingshot, int _slingshotSwitch, int _points) {
 
     int buttonState = 1; // variable for reading the pushbutton status
     // read the state of the pushbutton value:
