@@ -213,7 +213,7 @@ void During(){
     Serial.println("LOGIC: Game ended");
   }
   if (ballState == HIGH){
-    Serial.println("INPUT: Ball death triggered");
+    if (inputLogging == true) {Serial.println("INPUT: Ball death triggered");}
     if (ballCounted == false){
       if (gameClock-recentLostBall < 3000) {//make sure that bounced ball is not counted twice
         ballsRemaining -= 1;
@@ -237,7 +237,7 @@ void Waiting(){
     coins -= minCoinsRequerd;
     StartGame();
   } else {
-    setMessage("aaaaaa");//not enough coins coins
+    message = "aaaaaa";//not enough coins coins
     for(int i = lightsOn; i <= myLedsSize; i++){
       myLeds[2][i] = 0;
     }
@@ -381,9 +381,6 @@ void DisplayInt(int score) {
     message = setstring+"0";
   }
 }
-void setMessage(String mess) {//why?
-  message = mess;
-}
 void ToDisplay (String _inputString){ //could work for length 6 to 1
     int lengthInput = _inputString.length();
     String combine = "$PIN4"+_inputString;
@@ -397,6 +394,11 @@ void ToDisplay (String _inputString){ //could work for length 6 to 1
         Serial.println("ERROR: invalited print to display value");
     }
 }
+
+//under work for pi
+//int OpenCom(String _type, String _ID){/* start comuticion with another device */}
+//int SendTo(String _data, String _ID){/* */}
+//String ReceiveFrom(){}
 
 bool RollOverSwichLogic(int _inputPin){// NOT TESTED will take in a pin and making into a bool roll over switch
     int rollOverSwich = digitalRead(_inputPin);
@@ -445,6 +447,7 @@ void LedLightControl(){
     else {Serial.println("ERROR: I did soming wrong with arrays in LedGridLightUP");}
   }
 }
+
 
 //******************************************************************************************************
 
