@@ -434,16 +434,16 @@ void LedStateControl(){
     Serial.println("Trying to light up too many leds!");
   }
   for(int i = 0; i <= lightsOn; i++){
-    myLeds[2][i] = 1;
+    myLeds[1][i] = 1;
   }
   for(int i = lightsOn; i <= myLedsSize; i++){
-    myLeds[2][i] = 0;
+    myLeds[1][i] = 0;
   }
 }
 void LedLightControl(){
-  for(int i = 0; i <= myLedsSize; i++){
-    if (myLeds[2][i] == 1){digitalWrite(myLeds[1][i], HIGH);}
-    else if (myLeds[2][i] == 0) { digitalWrite(myLeds[1][i], LOW);}
+  for(int i = 0; i <= myLedsSize - 1; i++){
+    if (myLeds[1][i] == 1){digitalWrite(myLeds[0][i], HIGH);}
+    else if (myLeds[1][i] == 0) { digitalWrite(myLeds[0][i], LOW);}
     else {Serial.println("ERROR: I did soming wrong with arrays in LedGridLightUP");}
   }
 }
