@@ -1,4 +1,7 @@
 
+//$pin4123456
+
+#define ASCII_DOLLAR 36
 
 const int led1 = 2;
 const int led2 = 3;
@@ -18,7 +21,13 @@ int myLeds[2][6] = {
 //int lightsOn = 0;
 int pointsPerLed = 20;
 
-int score = 76;
+const int headerSize = 4;
+
+String inputString = "";
+unsigned char cPinScore = 4;
+int score = 0;
+
+bool stringComplete = false;
 
 
 void setup() {
@@ -42,9 +51,73 @@ void loop() {
  //LedStuff();
 }
 
+void serialEvent (){
+  while (Serial.available()) {
+    //Serial.println("Serial is available");
+    int stringLenght = inputString.length();
+    char inChar = (char)Serial.read();
+    inputString += inChar;
+
+    if (inChar == '\n'){
+      
+      int inputLength = inputString.length();
+      if (inputString[0] == ASCII_DOLLAR) {
+        
+        cPinScore = inputString[4]; // PinScore id held here
+        if (cPinScore == '4') {
+          
+          inputToScore(inputString);
+        }
+        stringComplete = true;
+        inputString = "";
+      }
+    }
+    if (stringLenght > 20) {
+      inputString = "";
+    }
+  }
+}
+void inputToScore(String _myString){
+  int myStringLenght = _myString.length();
+  int numbersA[myStringLenght];
+  char read = 'null';
+  for (int i = myStringLenght - 3; i > headerSize; i--) {
+    read = _myString[i];
+
+    if(read == '0'){
+      numbersA[i] =  0;
+    } else if(read == '1'){
+        numbersA[i] =  1;
+    }else if(read == '2'){
+        numbersA[i] =  2;
+    }else if(read == '3'){
+        numbersA[i] =  3;
+    }else if(read == '4'){
+        numbersA[i] =  4;
+    }else if(read == '5'){
+        numbersA[i] =  5;
+    }else if(read == '6'){
+        numbersA[i] =  6;
+    }else if(read == '7'){
+        numbersA[i] =  7;
+    }else if(read == '8'){
+        numbersA[i] =  8;
+    }else if(read == '9'){
+        numbersA[i] =  9;
+    }
+    
+    Serial.println(numbersA[i]);
+  }
+}
+
+
+
+
 void LedStuff(){
   //LedStateControl();
   LedLightControl();
+}
+void getScore(){
 }
 
 
@@ -54,18 +127,11 @@ void LedStateControl(){
   int nextLed = pointsPerLed;
 
   if (ledsByScore == true){
-  
+
     while (nextLed <= score) {
       lightsOn++;
-      Serial.println("while");
       nextLed = nextLed + pointsPerLed;
-      delay(2);
     }
-  
-    Serial.print("Socre is ");
-    Serial.print(score);
-    Serial.print(" nextLed is ");
-    Serial.println(nextLed);
   } else {lightsOn = myLedsSize;}
   if (lightsOn > myLedsSize) {
     lightsOn = 0;
@@ -73,15 +139,10 @@ void LedStateControl(){
   }
   for(int i = 1; i <= lightsOn; i++){
     myLeds[1][i] = 1;
-    Serial.print("on");
-    Serial.println(i);
   }
   for(int i = lightsOn; i <= myLedsSize; i++){
     myLeds[1][i] = 0;
-    Serial.print("off");
-    Serial.println(i);
   }
-  Serial.println(lightsOn);
   lightsOn = 0;
 }
 
