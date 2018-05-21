@@ -1,5 +1,9 @@
+/*code for leds on a seprat ardonio
+*
+*/
 
 //$pin4123456
+//$pin404456
 
 #define ASCII_DOLLAR 36
 
@@ -10,16 +14,16 @@ const int led4 = 5;
 const int led5 = 6;
 const int led6 = 7;
 
-const bool ledsByScore = true;//will cause score to set how many leds
+const bool ledsByScore = true;//will cause score to set how many leds affected by score
 
 int myLedsSize = 6;
-int myLeds[2][6] = {
-  {led1,led2,led3,led4,led5,led6},//
+int myLeds[2][6] = {// myLeds[y][x]. if to add led blinking would be 3 and an other array set wold be add for delta time.
+  {led1,led2,led3,led4,led5,led6},//led pis
   {1,1,1,1,1,1}//led states
 };
 
 //int lightsOn = 0;
-int pointsPerLed = 20;
+int pointsPerLed = 100;
 
 const int headerSize = 4;
 
@@ -59,17 +63,18 @@ void serialEvent (){
     inputString += inChar;
 
     if (inChar == '\n'){
-      
+
       int inputLength = inputString.length();
       if (inputString[0] == ASCII_DOLLAR) {
-        
+
         cPinScore = inputString[4]; // PinScore id held here
         if (cPinScore == '4') {
-          
-          inputToScore(inputString);
+
+          score = inputToScore(inputString);//just to make it easy to read
         }
         stringComplete = true;
         inputString = "";
+        
       }
     }
     if (stringLenght > 20) {
@@ -77,50 +82,67 @@ void serialEvent (){
     }
   }
 }
-void inputToScore(String _myString){
+int inputToScore(String _myString){
   int myStringLenght = _myString.length();
-  int numbersA[myStringLenght];
+  int preScore = 0;
   char read = 'null';
-  for (int i = myStringLenght - 3; i > headerSize; i--) {
+  int x = 0;
+  for (int i = myStringLenght - 3; i > headerSize; i--) {//loop for reading data inside string. minus 3 because last to slots were weird and last number is not wanted.
+    int preInt = 0;
+    int mul = 0;
     read = _myString[i];
+    x++;
 
+    //reads the char
     if(read == '0'){
-      numbersA[i] =  0;
+      preInt =  0;
     } else if(read == '1'){
-        numbersA[i] =  1;
+        preInt =  1;
     }else if(read == '2'){
-        numbersA[i] =  2;
+        preInt =  2;
     }else if(read == '3'){
-        numbersA[i] =  3;
+        preInt =  3;
     }else if(read == '4'){
-        numbersA[i] =  4;
+        preInt =  4;
     }else if(read == '5'){
-        numbersA[i] =  5;
+        preInt =  5;
     }else if(read == '6'){
-        numbersA[i] =  6;
+        preInt =  6;
     }else if(read == '7'){
-        numbersA[i] =  7;
+        preInt =  7;
     }else if(read == '8'){
-        numbersA[i] =  8;
+        preInt =  8;
     }else if(read == '9'){
-        numbersA[i] =  9;
+        preInt =  9;
+    }else{
+      Serial.println("ERROR: something is very wrong line:115");
     }
-    
-    Serial.println(numbersA[i]);
+
+    //set a multiblyer
+    if(x == 1){
+      mul = 1;
+    } else if (x == 2){
+      mul = 10;
+    } else if (x == 3){
+      mul = 100;
+    } else if (x == 4){
+      mul = 1000;
+    } else if (x == 5){
+      mul = 10000;
+    } else if (x > 5){
+      Serial.println("ERROR: number to large line:126");
+      x = 0;
+      mul = 0;
+    } else{
+      Serial.println("ERROR: something went wrong line:130");
+    }
+    //mul = pow(10, x);//why will this not work?
+    preInt = preInt * mul;
+    preScore += preInt;
+    preInt = 0;
   }
+  return preScore;
 }
-
-
-
-
-void LedStuff(){
-  //LedStateControl();
-  LedLightControl();
-}
-void getScore(){
-}
-
-
 
 void LedStateControl(){
   int lightsOn = 0;
@@ -135,7 +157,7 @@ void LedStateControl(){
   } else {lightsOn = myLedsSize;}
   if (lightsOn > myLedsSize) {
     lightsOn = 0;
-    Serial.println("Trying to light up too many leds!");
+    Serial.println("Trying to light up too many leds! Check pointsPerLed on line 23. line:169");
   }
   for(int i = 1; i <= lightsOn; i++){
     myLeds[1][i] = 1;
@@ -148,8 +170,14 @@ void LedStateControl(){
 
 void LedLightControl(){
   for(int i = 0; i <= myLedsSize - 1; i++){
-    if (myLeds[1][i] == 1){digitalWrite(myLeds[0][i], HIGH);}
-    else if (myLeds[1][i] == 0) { digitalWrite(myLeds[0][i], LOW);}
-    else {Serial.println("ERROR: I did soming wrong with arrays in LedGridLightUP");}
+    if (myLeds[1][i] == 1){
+      digitalWrite(myLeds[0][i], HIGH);
+    }
+    else if (myLeds[1][i] == 0) {
+      digitalWrite(myLeds[0][i], LOW);
+    }
+    else {
+      Serial.println("ERROR: I did soming wrong with arrays in LedLightControl start at line 180. line:184");
+    }
   }
 }
