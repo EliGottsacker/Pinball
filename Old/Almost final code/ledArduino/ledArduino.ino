@@ -14,18 +14,24 @@ const int led4 = 5;
 const int led5 = 6;
 const int led6 = 7;
 
-const bool ledsByScore = true;//will cause score to set how many leds affected by score
+
+//debugging
+const bool ledsByScore = true; //will cause score to set how many leds affected by score.
+const bool useWarrings = true;
+const bool useMessages = true;
+const int indicaterLed = 13;   //use this for debugging.
 
 int myLedsSize = 6;
 int myLeds[2][6] = {// myLeds[y][x]. if to add led blinking would be 3 and an other array set wold be add for delta time.
-  {led1,led2,led3,led4,led5,led6},//led pis
-  {1,1,1,1,1,1}//led states
+  {led1,led2,led3,led4,led5,led6}, //led pins.
+  {1,1,1,1,1,1}//led states.
 };
 
 //int lightsOn = 0;
 int pointsPerLed = 100;
 
 const int headerSize = 4;
+const char channal = '4';
 
 String inputString = "";
 unsigned char cPinScore = 4;
@@ -68,13 +74,14 @@ void serialEvent (){
       if (inputString[0] == ASCII_DOLLAR) {
 
         cPinScore = inputString[4]; // PinScore id held here
-        if (cPinScore == '4') {
+        if (cPinScore == channal) {
 
+          digitalWrite(13, HIGH);
           score = inputToScore(inputString);//just to make it easy to read
         }
         stringComplete = true;
         inputString = "";
-        
+
       }
     }
     if (stringLenght > 20) {
@@ -114,8 +121,12 @@ int inputToScore(String _myString){
         preInt =  8;
     }else if(read == '9'){
         preInt =  9;
+    }else if(read == 'a'){
+        preInt =  0;
     }else{
-      Serial.println("ERROR: something is very wrong line:115");
+      if (useWarrings == true){
+       Serial.println("ERROR: something is very wrong line:115");
+      }
     }
 
     //set a multiblyer
@@ -130,7 +141,9 @@ int inputToScore(String _myString){
     } else if (x == 5){
       mul = 10000;
     } else if (x > 5){
-      Serial.println("ERROR: number to large line:126");
+      if(useWarrings == true){
+        Serial.println("ERROR: number to large line:126");
+      }
       x = 0;
       mul = 0;
     } else{
