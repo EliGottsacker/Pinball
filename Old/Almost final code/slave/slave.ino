@@ -1,5 +1,5 @@
 //
-/*  
+/*
 INSTRUCTIONS:
 
 Using the serial monitor, type in the header "$PIN" followed by the ID you've chosen
@@ -54,7 +54,7 @@ unsigned char digitBCD = 0; // start no digit selected
 #define ASCII_CR 13
 #define ASCII_LF 10
 
-enum  
+enum
 {
   LED_ZERO,
   LED_ONE,
@@ -62,12 +62,12 @@ enum
   LED_THREE,
   PLAYER_ONE,
   PLAYER_TWO,
-  CREDIT_BALLS  
+  CREDIT_BALLS
 };
 
 #define LED_CHAN PLAYER_ONE // change this to the PLAYER that the unit will be driving
 
-void setup() 
+void setup()
 {
   DDRB = B00111111;  // sets Arduino port B pins 0 to 4 as outputs
   DDRD = B11111111;  // sets Arduino port B pins 0 to 4 as outputs
@@ -78,20 +78,20 @@ void setup()
   // reserve 200 bytes for the inputString:
   inputString.reserve(200);
 
-    for (int i = 0; i < 8; i++) 
+    for (int i = 0; i < 8; i++)
   {
     cDataPinScore[i] = i + 48;
   }
 
 }
 
-void loop() 
+void loop()
 {
 
 // continuously scan the PinScore display, outputing the most recent data
-  for (int i = 2; i < 8; i++) 
+  for (int i = 2; i < 8; i++)
   {
-    selectDigit = i;  
+    selectDigit = i;
 
     PORTD = (0); // clear all
 
@@ -113,7 +113,7 @@ void loop()
  response.  Multiple bytes of data may be available.
  */
 
-void serialEvent() 
+void serialEvent()
 {
   while (Serial.available())
   {
@@ -125,7 +125,7 @@ void serialEvent()
 
     // if the incoming character is a newline, set a flag
     // so the main loop can do something about it:
-    if (inChar == '\n') 
+    if (inChar == '\n')
     {
       int inputLength = inputString.length();
 
@@ -136,18 +136,18 @@ void serialEvent()
         if (cPinScore == (LED_CHAN + 48)) //4 )
         {
           for (int k = 0; k<6; k++) // acount for numbers less than six digits
-      {
-      cDataPinScore[k] = inputString[k + 5];
-      } // next k
+          {
+            cDataPinScore[k] = inputString[k + 5];
+          } // next k
 
         } // end If received ID matches the one this unit is programmed for
 
         stringComplete = true;
         inputString = "";
 
-      } // end If first char was $ 
+      } // end If first char was $
 
-    } // end If new line 
+    } // end If new line
 
   } // end While
 
