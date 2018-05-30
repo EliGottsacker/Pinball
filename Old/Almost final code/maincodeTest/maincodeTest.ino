@@ -231,6 +231,11 @@ void Waiting(){
   }
 }
 void Always(){
+  if (balls > 0){
+    gameState = true;
+  } else {
+    gameState = false;
+  }
   if (coinDetected == HIGH) {//if coin sensor is on
     if(coinCounted == false){//and we have not counted it yet
       coinsCounted++;
@@ -373,9 +378,8 @@ void ToDisplay (String _inputString){ //could work for length 6 to 1
     String combine = "$PIN4"+_inputString;
     if (true || (lengthInput < 7 && lengthInput > -1)){
         Serial1.print(combine);
-        //Serial1.write(setCharThing);
         Serial1.write('\n');
-        //Serial.println(_inputChar);
+
 
     } else if (lengthInput > 6){// not supported yet.
         Serial.println("ERROR: string value too long");
@@ -489,28 +493,6 @@ void RollOverSwichControl (int _rollOverSwich){
     swichState = RollOverSwichLogic(_rollOverSwich);
     if (swichState){
         AddScore(pointsForRollOver);
-    }
-}
-
-void UseLED(int _ledPin,  int _mode){//NOT DONE
-    bool LEDState;
-
-    if (_mode == 0){// LED off
-        LEDState = true;
-    } else if (_mode == 1){//LED on
-        LEDState = false;
-    } else if (_mode == 2) { // LED pulse
-        LEDState = true;
-        delay(40);//ajust time
-        LEDState = false;
-    }else if (_mode == 3){ // LED bink DO NOT USE
-        digitalWrite(_ledPin, HIGH);
-    }
-
-    if (LEDState){
-        digitalWrite(_ledPin, HIGH);
-    }else{
-        digitalWrite(_ledPin, LOW);
     }
 }
 
